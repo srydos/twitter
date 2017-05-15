@@ -37,8 +37,8 @@ begin
   else
     puts "hmm... what method?"
   end
+  puts 'done!'
 rescue
   puts 'reaction error!'
   exit
 end
-puts 'done!'
