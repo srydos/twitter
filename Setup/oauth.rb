@@ -25,7 +25,10 @@ key_hash = {
   'access_token'=>		@access_token.token,
   'access_token_secret'=>	@access_token.secret
 }
-open("./user.yml","w+") do |e|
+
+print 'this client called ... : '
+name = STDIN.gets.chomp
+open("./#{name}.yml","w+") do |e|
   YAML.dump(key_hash,e)
 end
-puts "user.yml exported."
+puts "#{name}.yml exported."
