@@ -1,9 +1,11 @@
 #!/usr/bin/env ruby
 require 'twitter'
 require 'yaml'
+require 'sanitize'
 require 'pp'
 class TetesolTwitter
   attr_accessor :client
+
   def initialize( key_file_path = "" )
     if not key_file_path.empty? then
       @key_hash = YAML.load_file( key_file_path )
@@ -15,10 +17,11 @@ class TetesolTwitter
       }
       @client = Twitter::REST::Client.new(config)
     else
-      puts 'cannot read key_file_path...'
+      puts 'cannot read file_path...'
       exit
     end
   end
+
   #ツイートする機能
   #text :ツイートの内容
   def tweet( text = '' )
@@ -30,6 +33,7 @@ class TetesolTwitter
     puts msg
     client.update( msg )
   end
+
   #リプライ機能。リプライ対象のidを読み取って、@(userid) (text)の形でpostする
   #target_tweet_id :リプライを送るツイートのid
   #text            :ツイートの内容
@@ -46,39 +50,49 @@ class TetesolTwitter
     puts msg
     client.update(msg,{:in_reply_to_status_id => target_tweet_id})
   end
+
   #ホームタイムラインを取得して生jsonのまま返す
   def home_timeline( last_tweet_id )
     client.home_timeline({:since_id => last_tweet_id})
   end
+
   def local_trends( locale_code = 0 )
     hash = client.local_trends ( locale_code )
   end
+
   def search( query = '', count = 15 )
     timeline = client.search(query, {:count => count} )
   end
+
   def popular_search( query = '', count = 15 )
     timeline = client.search(query, {:count => count, :result_type => "popular"} )
   end
+
   #自分のTL
   def my_timeline
     client.user_timeline( client.user.id, {})
   end
+
   #誰かのTL
   def user_timeline(user_id, options = {})
     client.user_timeline( user_id )
   end
+
   #mention
   def mentions_timeline 
     client.mentions_timeline
   end
+
   #mention
   def mentions_timeline_bot(last_id) 
     client.mentions_timeline( {:since_id => last_id} )
   end
+
   #tweet_idに対してのreaction
   def retweet(id)
     client.retweet(id)
   end
+
   def favorite(id)
     client.favorite(id)
   end
@@ -123,13 +137,14 @@ p item
       tweet_print_console(tweet)
       @tweet_id = tweet.id.to_s
     end
-    last_tweet_id = @tweet_id
+    return @tweet_id
   end
   def tweet_print_console(tweet_entity)
        #タイムラインを表示
-      puts "	#{tweet_entity.user.name} /@#{tweet_entity.user.screen_name} /#{tweet_id_to_time(tweet_entity.id).strftime("%Y-%m-%d %H:%M:%S.%L %Z")} : ( #{tweet_entity.id.to_s} ) fv:#{tweet_entity.favorite_count} rt:#{tweet_entity.retweet_count}\n #{tweet_entity.full_text}\n"
-      tweet_id = tweet_entity.id
+      puts "	#{tweet_entity.user.name} /@#{tweet_entity.user.screen_name} /#{tweet_id_to_time(tweet_entity.id).strftime("%Y-%m-%d %H:%M:%S.%L %Z")} : ( #{tweet_entity.id.to_s} ) fv:#{tweet_entity.favorite_count} rt:#{tweet_entity.retweet_count} #{Sanitize.clean(tweet_entity.source)}\n #{tweet_entity.full_text}\n"
+      return tweet_entity.id
   end
+
   #YAMLに吐き出す機能？
   def tweet_print_yaml(timeline_hash, export_file_path)
     timeline_hash.each do |tweet|
@@ -139,21 +154,23 @@ p item
       end
     end
   end
+
   #読み込んだファイルの最終行だけを返す
   def read_or_make_text_file(file_path)
     text = ""
     if File.exist? (file_path)
       File.open(file_path,"r") do |file|
         file.each do |line|
-          text = "#{line.chomp}"
+          text += "#{line.chomp}"
         end
       end
     else
       File.open(file_path,"w")
       File.print(text)
     end
-    text
+    return text
   end
+
   #渡されたtextをファイルに書き込む
   def write_text_to_file(file_path, text)
     File.open(file_path,"r+") do |file|

@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require 'twitter'
+require 'Sanitize'
 require 'yaml'
 require 'pp'
 class TetesolStreaming
@@ -15,7 +16,7 @@ class TetesolStreaming
       }
       @stream = Twitter::Streaming::Client.new(config)
     else
-      puts 'cannot read key_file_path...'
+      puts 'cannot read file_path...'
       exit
     end
   end
