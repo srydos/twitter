@@ -28,7 +28,14 @@ key_hash = {
 
 print 'this client called ... : '
 name = STDIN.gets.chomp
-open("./#{name}.yml","w+") do |e|
+export_path = "#{WORK_DIR}../Config/#{name}.yml"
+if File.exist?(export_path)
+  print "#{export_path} is already exist! \noverwrite? type \"yes\" :"
+  ans = STDIN.gets.chomp
+  print 'ok. no action.' unless ans.eql?("yes")
+  exit unless ans.eql?("yes")
+end
+open("#{WORK_DIR}../Config/#{name}.yml","w+") do |e|
   YAML.dump(key_hash,e)
 end
 puts "#{name}.yml exported."
