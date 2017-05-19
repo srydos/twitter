@@ -5,10 +5,17 @@ require WORK_DIR + 'Class/TetesolTwitter.rb'
 tweet_user = TetesolTwitter.new(WORK_DIR + 'Config/user.yml')
 
 msg = ''
-ARGV.each do | text |
+args = ARGV
+args.each do | text |
   msg += text + ' '
 end
-msg[/ $/]= ''
+if msg == '' or args.length == 0
+  print 'input massage! : '
+  msg = STDIN.gets
+end
+if msg.match(/ $/)
+  msg[/ $/]= ''
+end
 begin
   tweet_user.tweet(msg)
 rescue

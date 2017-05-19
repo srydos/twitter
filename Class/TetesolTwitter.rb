@@ -25,10 +25,6 @@ class TetesolTwitter
   #ツイートする機能
   #text :ツイートの内容
   def tweet( text = '' )
-    if text == '' then
-      print 'input massage! : '
-      text = STDIN.gets
-    end
     msg = text
     puts msg
     client.update( msg )
