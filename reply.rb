@@ -30,4 +30,5 @@ elsif ARGV.length >= 3 then
 else 
   msg = ARGV[1]
 end
-tweet_user.reply( target_tweet_id, msg )
+tweet = tweet_user.reply(target_tweet_id, msg)
+tweet_user.tweet_print_console(tweet)

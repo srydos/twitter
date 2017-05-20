@@ -27,7 +27,8 @@ class TetesolTwitter
   def tweet( text = '' )
     msg = text
     puts msg
-    client.update( msg )
+    tweet = client.update( msg )
+    return tweet
   end
 
   #リプライ機能。リプライ対象のidを読み取って、@(userid) (text)の形でpostする
@@ -43,13 +44,14 @@ class TetesolTwitter
     end
     msg = "@#{target_user.screen_name} " + text
 #    msg = text #replyに@いらなくなる日が来る
-    puts msg
-    client.update(msg,{:in_reply_to_status_id => target_tweet_id})
+    tweet = client.update(msg,{:in_reply_to_status_id => target_tweet_id})
+    return tweet
   end
 
   #ホームタイムラインを取得して生jsonのまま返す
   def home_timeline( last_tweet_id )
-    client.home_timeline({:since_id => last_tweet_id})
+    json =  client.home_timeline({:since_id => last_tweet_id})
+    return json
   end
 
   def local_trends( locale_code = 0 )
@@ -69,35 +71,44 @@ class TetesolTwitter
 
   #自分のTL
   def my_timeline
-    client.user_timeline( client.user.id, {})
+    timeline = client.user_timeline( client.user.id, {})
+    return timeline
   end
 
   #誰かのTL
   def user_timeline(user_id, options = {})
-    client.user_timeline( user_id )
+    timeline = client.user_timeline( user_id )
+    return timeline
   end
 
   #mention
   def mentions_timeline 
-    client.mentions_timeline
+    client.mentionstimeline = _timeline
+    return timeline
   end
 
   #mention
   def mentions_timeline_bot(last_id) 
-    client.mentions_timeline( {:since_id => last_id} )
+    client.mentionstimeline = _timeline( {:since_id => last_id} )
+    return timeline
   end
 
   #tweet_idに対してのreaction
   def retweet(id)
-    client.retweet(id)
+    tweet = client.retweet(id)
+    return tweet
   end
 
   def favorite(id)
-    client.favorite(id)
+    tweet = client.favorite(id)
+    return tweet
   end
+
   def unfavorite(id)
-    client.unfavorite(id)
+    tweet = client.unfavorite(id)
+    return tweet
   end
+
   def status(id) #発言の詳細をゲットする
     @target = client.status(id)
     tweet_print_console(@target)
@@ -114,9 +125,12 @@ p item
     tweets_print_console(@reactions, 1)
     tweets_print_console(tweet.user_mentions, 1)
   end
+
   def destroy_status(id) #発言削除
-    client.destroy_status(id)
+    tweet = client.destroy_status(id)
+    return tweet
   end
+
   #####
   # 関連メソッド
   #####
@@ -124,27 +138,31 @@ p item
   def tweet_id_to_time(tweet_id)
     case tweet_id
     when Integer
-      Time.at(((tweet_id >> 22) + 1288834974657) / 1000.0)
+      time = Time.at(((tweet_id >> 22) + 1288834974657) / 1000.0)
     else
-      nil
+      time = nil
     end
+    return time
   end
+
   #timelineのtweet_id以降のタイムラインをコンソールに表示して、最後のtweet_idを返す
-  def tweets_print_console(timeline_arr, tweet_id)
+  def tweets_print_console(timeline, tweet_id)
     @tweet_id = tweet_id
-    timeline_arr.reverse.each do |tweet|
+    timeline.reverse.each do |tweet|
       tweet_print_console(tweet)
       @tweet_id = tweet.id.to_s
     end
     return @tweet_id
   end
+
   def tweet_print_console(tweet_entity)
-       #タイムラインを表示
+       #ツイートを表示して、そのIDを返す
       puts "	#{tweet_entity.user.name} /@#{tweet_entity.user.screen_name} /#{tweet_id_to_time(tweet_entity.id).strftime("%Y-%m-%d %H:%M:%S.%L %Z")} : ( #{tweet_entity.id.to_s} ) fv:#{tweet_entity.favorite_count} rt:#{tweet_entity.retweet_count} #{Sanitize.clean(tweet_entity.source)}\n #{tweet_entity.full_text}\n"
       return tweet_entity.id
   end
 
   #YAMLに吐き出す機能？
+  #TODO 命名も含めて見直す
   def tweet_print_yaml(timeline_hash, export_file_path)
     timeline_hash.each do |tweet|
       #タイムラインを表示

@@ -17,7 +17,9 @@ if msg.match(/ $/)
   msg[/ $/]= ''
 end
 begin
-  tweet_user.tweet(msg)
+  tweet = tweet_user.tweet(msg)
+  p tweet.id
+  tweet_user.tweet_print_console(tweet)
 rescue
   puts 'tweet error!'
   exit

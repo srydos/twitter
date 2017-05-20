@@ -25,15 +25,15 @@ puts "\"" + func_name + "\" doing..."
 begin
   case func_name 
   when "retweet"
-    twitter_user.retweet(target_tweet_id)
+    result = twitter_user.retweet(target_tweet_id)
   when "favorite"
     result = twitter_user.favorite(target_tweet_id)
     if result.empty? then
-      twitter_user.unfavorite(target_tweet_id)
+      result = twitter_user.unfavorite(target_tweet_id)
       puts "unfav."
     end
   when "delete"
-    twitter_user.destroy_status(target_tweet_id)
+    result = twitter_user.destroy_status(target_tweet_id)
   else
     puts "hmm... what method?"
   end
@@ -41,4 +41,9 @@ begin
 rescue
   puts 'reaction error!'
   exit
+end
+
+#帰ってきたツイート配列の中身を表示
+result.each do |tweet|
+  twitter_user.tweet_print_console(tweet)
 end
