@@ -6,9 +6,9 @@ require 'pp'
 class TetesolTwitter
   attr_accessor :client
 
-  def initialize( key_file_path = "" )
+  def initialize(key_file_path = "")
     if not key_file_path.empty? then
-      @key_hash = YAML.load_file( key_file_path )
+      @key_hash = YAML.load_file(key_file_path)
       config = {
         consumer_key:        @key_hash['consumer_key'],
         consumer_secret:     @key_hash['consumer_secret'],
@@ -25,10 +25,6 @@ class TetesolTwitter
   #ツイートする機能
   #text :ツイートの内容
   def tweet( text = '' )
-    if text == '' then
-      print 'input massage! : '
-      text = STDIN.gets
-    end
     msg = text
     puts msg
     client.update( msg )
@@ -58,14 +54,17 @@ class TetesolTwitter
 
   def local_trends( locale_code = 0 )
     hash = client.local_trends ( locale_code )
+    return hash
   end
 
   def search( query = '', count = 15 )
     timeline = client.search(query, {:count => count} )
+    return timeline
   end
 
   def popular_search( query = '', count = 15 )
     timeline = client.search(query, {:count => count, :result_type => "popular"} )
+    return timeline
   end
 
   #自分のTL
