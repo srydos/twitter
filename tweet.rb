@@ -18,7 +18,6 @@ if msg.match(/ $/)
 end
 begin
   tweet = tweet_user.tweet(msg)
-  p tweet.id
   tweet_user.tweet_print_console(tweet)
 rescue
   puts 'tweet error!'
