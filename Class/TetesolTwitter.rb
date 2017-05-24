@@ -4,22 +4,16 @@ require 'yaml'
 require 'sanitize'
 require 'pp'
 class TetesolTwitter
-  attr_accessor :client
-
-  def initialize(key_file_path = "")
-    if not key_file_path.empty? then
-      @key_hash = YAML.load_file(key_file_path)
-      config = {
-        consumer_key:        @key_hash['consumer_key'],
-        consumer_secret:     @key_hash['consumer_secret'],
-        access_token:        @key_hash['access_token'],
-        access_token_secret: @key_hash['access_token_secret']
-      }
-      @client = Twitter::REST::Client.new(config)
-    else
-      puts 'cannot read file_path...'
-      exit
-    end
+  #初期化
+  def initialize(key_file_path)
+    @key_hash = YAML.load_file(key_file_path)
+    config = {
+      consumer_key:        @key_hash['consumer_key'],
+      consumer_secret:     @key_hash['consumer_secret'],
+      access_token:        @key_hash['access_token'],
+      access_token_secret: @key_hash['access_token_secret']
+    }
+    @client = Twitter::REST::Client.new(config)
   end
 
   #ツイートする機能
@@ -27,7 +21,7 @@ class TetesolTwitter
   def tweet( text = '' )
     msg = text
     puts msg
-    tweet = client.update( msg )
+    tweet = @client.update( msg )
     return tweet
   end
 
@@ -37,41 +31,41 @@ class TetesolTwitter
   def reply ( target_tweet_id = 0, text = '' )
     #リプライ対象のユーザを取得
     begin
-      target_user = client.status( target_tweet_id ).user
+      target_user = @client.status( target_tweet_id ).user
     rescue
       puts 'target_user was not found...'
       return
     end
     msg = "@#{target_user.screen_name} " + text
 #    msg = text #replyに@いらなくなる日が来る
-    tweet = client.update(msg,{:in_reply_to_status_id => target_tweet_id})
+    tweet = @client.update(msg,{:in_reply_to_status_id => target_tweet_id})
     return tweet
   end
 
   #ホームタイムラインを取得して生jsonのまま返す
   def home_timeline( last_tweet_id )
-    json =  client.home_timeline({:since_id => last_tweet_id})
+    json =  @client.home_timeline({:since_id => last_tweet_id})
     return json
   end
 
   def local_trends( locale_code = 0 )
-    hash = client.local_trends ( locale_code )
+    hash = @client.local_trends ( locale_code )
     return hash
   end
 
   def search( query = '', count = 15 )
-    timeline = client.search(query, {:count => count} )
+    timeline = @client.search(query, {:count => count} )
     return timeline
   end
 
   def popular_search( query = '', count = 15 )
-    timeline = client.search(query, {:count => count, :result_type => "popular"} )
+    timeline = @client.search(query, {:count => count, :result_type => "popular"} )
     return timeline
   end
 
   #自分のTL
   def my_timeline
-    timeline = client.user_timeline( client.user.id, {})
+    timeline = @client.user_timeline( client.user.id, {})
     return timeline
   end
 
@@ -83,34 +77,38 @@ class TetesolTwitter
 
   #mention
   def mentions_timeline 
-    client.mentionstimeline = _timeline
+    @client.mentionstimeline = _timeline
     return timeline
   end
 
   #mention
   def mentions_timeline_bot(last_id) 
-    client.mentionstimeline = _timeline( {:since_id => last_id} )
+    @client.mentionstimeline = _timeline( {:since_id => last_id} )
     return timeline
   end
 
   #tweet_idに対してのreaction
   def retweet(id)
-    tweet = client.retweet(id)
+    tweet = @client.retweet(id)
     return tweet
   end
 
   def favorite(id)
-    tweet = client.favorite(id)
+    tweet = @client.favorite(id)
     return tweet
   end
 
+  def favorite(id)
+    @client.favorite(id)
+  end
+
   def unfavorite(id)
-    tweet = client.unfavorite(id)
+    tweet = @client.unfavorite(id)
     return tweet
   end
 
   def status(id) #発言の詳細をゲットする
-    @target = client.status(id)
+    @target = @client.status(id)
     tweet_print_console(@target)
     @reactions = @target.user_mentions
     if @reactions.empty? then
@@ -127,7 +125,7 @@ p item
   end
 
   def destroy_status(id) #発言削除
-    tweet = client.destroy_status(id)
+    tweet = @client.destroy_status(id)
     return tweet
   end
 

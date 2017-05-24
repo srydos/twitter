@@ -3,7 +3,7 @@ WORK_DIR=File.expand_path(__FILE__).sub(/[^\/]+$/,'')
 require WORK_DIR + './Class/TetesolTwitter.rb'
 search_user = TetesolTwitter.new(WORK_DIR + './Config/user.yml')
 
-if (search_user == nil ) then 
+if (search_user == nil ) then
   puts 'user.yml is not found...'
   exit
 end
