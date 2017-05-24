@@ -20,7 +20,6 @@ class TetesolTwitter
   #text :ツイートの内容
   def tweet( text = '' )
     msg = text
-    puts msg
     tweet = @client.update( msg )
     return tweet
   end
