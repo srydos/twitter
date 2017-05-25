@@ -64,25 +64,25 @@ class TetesolTwitter
 
   #自分のTL
   def my_timeline
-    timeline = @client.user_timeline( client.user.id, {})
+    timeline = @client.user_timeline( @client.user.id, {})
     return timeline
   end
 
   #誰かのTL
   def user_timeline(user_id, options = {})
-    timeline = client.user_timeline( user_id )
+    timeline = @client.user_timeline( user_id )
     return timeline
   end
 
   #mention
   def mentions_timeline 
-    @client.mentionstimeline = _timeline
+    timeline = @client.mentions_timeline
     return timeline
   end
 
   #mention
   def mentions_timeline_bot(last_id) 
-    @client.mentionstimeline = _timeline( {:since_id => last_id} )
+    timeline = @client.mentions_timeline({:since_id => last_id})
     return timeline
   end
 
