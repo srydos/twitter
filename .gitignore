@@ -3,6 +3,7 @@
 *.yml
 .last_tweet_id
 *.swp
+Result/*
 Config/*
 !Config
 err.log

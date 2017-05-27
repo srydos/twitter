@@ -19,7 +19,7 @@ puts  @request_token.authorize_url
 print "input PIN : "
 pin = STDIN.gets
 @access_token = @request_token.get_access_token(:oauth_verifier => pin)
-key_hash = { 
+key_hash = {
   'consumer_key'=>		@consumer_key,
   'consumer_secret'=>		@consumer_secret,
   'access_token'=>		@access_token.token,
