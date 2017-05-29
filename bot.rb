@@ -10,7 +10,7 @@ last_reply_id = "1"
 args = ARGV
 func_name = ""
 func_name = "debug_mode" if args.delete("-d") or args.delete("-debug")
-puts "#{func_name} mode"
+puts "#{func_name}"
 
 #最後に反応したtweet_idを取得
 last_reply_id = rest_client.read_or_make_text_file(WORK_DIR + "Config/.last_reply_id")
@@ -35,5 +35,6 @@ monitored_tl.reverse.each do |tweet|
     pp last_reply_id if func_name == "debug_mode"
   end
 end
+
 #最後のtweet_idを保存
 rest_client.write_text_to_file(WORK_DIR + "Config/.last_reply_id", last_reply_id)

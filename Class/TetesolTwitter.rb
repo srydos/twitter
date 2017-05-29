@@ -18,19 +18,19 @@ class TetesolTwitter
 
   #ツイートする機能
   #text :ツイートの内容
-  def tweet( text = '' )
+  def tweet(text = '')
     msg = text
-    tweet = @client.update( msg )
+    tweet = @client.update(msg)
     return tweet
   end
 
   #リプライ機能。リプライ対象のidを読み取って、@(userid) (text)の形でpostする
   #target_tweet_id :リプライを送るツイートのid
   #text            :ツイートの内容
-  def reply ( target_tweet_id = 0, text = '' )
+  def reply (target_tweet_id = 0, text = '')
     #リプライ対象のユーザを取得
     begin
-      target_user = @client.status( target_tweet_id ).user
+      target_user = @client.status(target_tweet_id).user
     rescue
       puts 'target_user was not found...'
       return
@@ -42,23 +42,23 @@ class TetesolTwitter
   end
 
   #ホームタイムラインを取得して生jsonのまま返す
-  def home_timeline( last_tweet_id )
+  def home_timeline(last_tweet_id)
     json =  @client.home_timeline({:since_id => last_tweet_id})
     return json
   end
 
-  def local_trends( locale_code = 0 )
-    hash = @client.local_trends ( locale_code )
+  def local_trends(locale_code = 0)
+    hash = @client.local_trends (locale_code)
     return hash
   end
 
-  def search( query = '', count = 15 )
-    timeline = @client.search(query, {:count => count} )
+  def search(query = '', count = 15)
+    timeline = @client.search(query, {:count => count})
     return timeline
   end
 
-  def popular_search( query = '', count = 15 )
-    timeline = @client.search(query, {:count => count, :result_type => "popular"} )
+  def popular_search(query = '', count = 15)
+    timeline = @client.search(query, {:count => count, :result_type => "popular"})
     return timeline
   end
 
@@ -70,18 +70,18 @@ class TetesolTwitter
 
   #誰かのTL
   def user_timeline(user_id, options = {})
-    timeline = @client.user_timeline( user_id )
+    timeline = @client.user_timeline(user_id)
     return timeline
   end
 
   #mention
-  def mentions_timeline 
+  def mentions_timeline
     timeline = @client.mentions_timeline
     return timeline
   end
 
   #mention
-  def mentions_timeline_bot(last_id) 
+  def mentions_timeline_bot(last_id)
     timeline = @client.mentions_timeline({:since_id => last_id})
     return timeline
   end
@@ -164,7 +164,7 @@ p item
     timeline_hash.each do |tweet|
       #タイムラインを表示
       open(export_file_path,"a+") do |e|
-        YAML.dump( timeline_hash, e )
+        YAML.dump(timeline_hash, e)
       end
     end
   end
