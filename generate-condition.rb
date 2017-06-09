@@ -2,6 +2,7 @@
 require 'yaml'
 require 'pp'
 WORK_DIR=File.expand_path(__FILE__).sub(/[^\/]+$/,'')
+require WORK_DIR + './Class/BotSettings.rb'
 require WORK_DIR + './Class/BotSetting.rb'
 
 DESCRIPTION =<<__EoT__
@@ -12,20 +13,21 @@ DESCRIPTION =<<__EoT__
    description: この設定時の説明用エリア
    condition:
      category: timeline mention delete等反応する条件配列 *必須*
-   - condition_text: 反応するテキスト配列 空配列の場合は全てに反応する
-   - client:   配列として指定された、反応しても良いクライアント
-   - user:     配列として指定されたidのユーザーのみ反応する
-   - ng_user:  配列として指定されたidのユーザには反応しない '@'不要
+   - condition_texts: 反応するテキスト配列 空配列の場合は全てに反応する
+     client:   配列として指定された、反応しても良いクライアント
+     user:     配列として指定されたidのユーザーのみ反応する
+     ng_user:  配列として指定されたidのユーザには反応しない '@'不要
      probability:   反応する確率 1で100% 0で反応しない 1がデフォ
-   reaction:
+   reactions:
      category: tweet reply follow fav等反応する動作の配列 *必須*
-     reply: replyの場合は必須 それ以外は省略可
-     - reaction_text: 返答するテキスト 配列可 *必須*
+     replies: replyの場合は必須 それ以外は省略可
+     - reaction_texts: 返答するテキスト 配列可 *必須*
        weight: 重み付け整数 数字が大きいほど上記テキストを返す可能性が高い 1がデフォ
        prefix: 接頭語 0..5でランダムについて重複投稿を回避
        suffix: 接尾語 0..5でランダムについて重複投稿を回避
    else:
      category: 確率に漏れた場合の動作カテゴリ
+     replies: 上記に同じ
 __EoT__
 
 #対話型インデックス選択
@@ -201,6 +203,5 @@ loop do
 end
 
 #出力
-#data = comment + conditions.to_s
-#pp data
-#YAML.dump(setting_file_path, data)
+ data = comment + setting.to_yaml
+ pp data
