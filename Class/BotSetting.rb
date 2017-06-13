@@ -10,10 +10,20 @@ class BotSetting < Hash
     @@rea = Struct.new('Reaction' , :category, :replies)
     @@rep = Struct.new('Reply' , :reaction_texts, :weight, :prefix, :suffix)
     @@els = Struct.new('Else'  , :category , :replies)
-    @condition = con.new(h[:category], h[:condition_texts], h[:client], h[:user], h[:ng_user], h[:probability])
-    reaction_array.each do |h|
+    @condition = @@con.new(h[:category], h[:condition_texts], h[:client], h[:user], h[:ng_user], h[:probability])
+    @reactions = Array.new
+    Array(reaction_array).each do |a|
       #リアクションの配列かく
-      @reactions.unshift(rea.new(h[:category], rep, els))
+      Array(a[:repries]).each do |r|
+        @rep = @@rep.new(r[:reaction_texts], r[:weight], r[:prefix], r[:suffix])
+      end
+      Array(a[:else]).each do |e|
+        Array(e[:repries]).each do |er|
+          @elsrep = @@rep.new(er[:reaction_texts], er[:weight], er[:prefix], er[:suffix])
+        end
+        @els = @@els.new(e[:category], @elsrep)
+      end
+      @reactions.unshift(@@rea.new(h[:category], @rep, @els))
     end
   end
 
