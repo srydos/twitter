@@ -11,9 +11,9 @@ DESCRIPTION =<<__EoT__
  - client:      使用するクライアント名 あらかじめConfig配下に設定ファイルを置く 必須
    description: この設定時の説明用エリア
    condition:
-   - category: timeline mention delete等反応する条件配列 *必須*
-     condition_text: 反応するテキスト配列 空配列の場合は全てに反応する
-     client:   配列として指定された、反応しても良いクライアント
+     category: timeline mention delete等反応する条件配列 *必須*
+   - condition_text: 反応するテキスト配列 空配列の場合は全てに反応する
+   - client:   配列として指定された、反応しても良いクライアント
    - user:     配列として指定されたidのユーザーのみ反応する
    - ng_user:  配列として指定されたidのユーザには反応しない '@'不要
      probability:   反応する確率 1で100% 0で反応しない 1がデフォ
@@ -24,6 +24,8 @@ DESCRIPTION =<<__EoT__
        weight: 重み付け整数 数字が大きいほど上記テキストを返す可能性が高い 1がデフォ
        prefix: 接頭語 0..5でランダムについて重複投稿を回避
        suffix: 接尾語 0..5でランダムについて重複投稿を回避
+   else:
+     category: 確率に漏れた場合の動作カテゴリ
 __EoT__
 
 #対話型インデックス選択
@@ -58,6 +60,9 @@ def choose_except_array(except_array)
   return input_text
 end
 
+#yamlに吐き出して終了
+def output_file(data)
+end
 ###
 #初期化
 ###
@@ -65,7 +70,7 @@ end
 comment = ""
 DESCRIPTION.each_line { |line| comment << '# ' << line }
 cond_categories  = ["reply", "timeline", "self", "delete", "fav_me", "fav", "follow"]
-cond_categories_description  = ["リプライ", "ホームタイムラインのツイート", "ツイート削除イベント", "自分のツイートがファボられたイベント", "誰かがファボったイベント", "フォローされた"]
+cond_categories_description  = ["リプライ", "ホームタイムラインのツイート", "自分のツイート", "ツイート削除イベント", "自分のツイートがファボられたイベント", "誰かがファボったイベント", "フォローされた"]
 react_categories = ["reply", "tweet", "delete", "fav", "follow", "log"]
 react_categories_description = ["リプライを返す", "何かツイートする", "対象を削除する(?)", "お気に入りに追加する", "そのユーザをフォローする", "保存出力しておく"]
 
@@ -112,7 +117,7 @@ while true
     edit_setting = selected_array.delete_at(edit_index) #選択要素を取り出す
     client    = edit_setting[:client]
     condition = edit_setting[:condition]
-    reactions  = edit_setting[:reaction]
+    reactions = edit_setting[:reaction]
     is_new    = false
     break
   elsif edit_index == selected_array.length #新規作成が選択された場合
@@ -131,14 +136,16 @@ setting = BotSetting.new(client, condition[:category], reactions)
 ###
 # 反応条件指定
 ###
+# カテゴリ設定
 puts "現在設定されている条件カテゴリ : #{setting.condition.category}"
 puts '[反応する条件カテゴリを設定してください]'
-operation_kinds = ["変更しない", "条件を変更", "この条件自体を削除"]
+operation_kinds = ["変更しない", "条件を変更", "この条件を削除"]
 operation_index = select_index(operation_kinds)
+pp operation_index
 case operation_index
 when 0
 when 1
-  print 'カテゴリを入力 : '
+  puts 'カテゴリを入力 : '
   input_num = select_index(cond_categories_description)
   setting.condition.category = cond_categories[input_num]
 when 2
@@ -150,6 +157,21 @@ when 2
     exit
   end
 end
+
+# tweet,reply等が含まれている場合、テキストの配列を設定
+if input_num.between?(0, 2)
+  puts "[反応するテキストを設定します]"
+  loop do
+    puts "現在設定されている反応テキスト : #{setting.condition.condition_text}"
+    input_text = STDIN.gets.chomp
+    setting.coniditon.condition_text.push(input_text)
+    print '他にも設定しますか？[y/n] :'
+    input = STDIN.gets.chomp
+    break unless input.match(/^[yY]/)
+  end
+end
+pp setting.condition.condition_text
+exit
 
 ###
 # 反応動作設定
