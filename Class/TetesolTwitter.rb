@@ -152,10 +152,14 @@ p item
     return @tweet_id
   end
 
-  def tweet_print_console(tweet_entity)
+  def tweet_print_console(tweet)
        #ツイートを表示して、そのIDを返す
-      puts "	#{tweet_entity.user.name} /@#{tweet_entity.user.screen_name} /#{tweet_id_to_time(tweet_entity.id).strftime("%Y-%m-%d %H:%M:%S.%L %Z")} : ( #{tweet_entity.id.to_s} ) fv:#{tweet_entity.favorite_count} rt:#{tweet_entity.retweet_count} #{Sanitize.clean(tweet_entity.source)}\n #{tweet_entity.full_text}\n"
-      return tweet_entity.id
+    if tweet.retweet? then
+      puts "	#{tweet.user.name} /@#{tweet.user.screen_name} /#{tweet_id_to_time(tweet.id).strftime("%Y-%m-%d %H:%M:%S.%L %Z")} : ( #{tweet.id.to_s} ) fv:#{tweet.favorite_count} rt:#{tweet.retweet_count} #{Sanitize.clean(tweet.source)}\n #{tweet.text}\n"
+    else
+      puts "	#{tweet.user.name} /@#{tweet.user.screen_name} /#{tweet_id_to_time(tweet.id).strftime("%Y-%m-%d %H:%M:%S.%L %Z")} : ( #{tweet.id.to_s} ) fv:#{tweet.favorite_count} rt:#{tweet.retweet_count} #{Sanitize.clean(tweet.source)}\n #{tweet.full_text}\n"
+    end
+      return tweet.id
   end
 
   #YAMLに吐き出す機能？
