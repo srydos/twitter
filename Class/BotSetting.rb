@@ -4,16 +4,15 @@
 ###
 class BotSetting < Hash
   attr_accessor :condition, :reactions
+  @@con = Struct.new('Condition', :category, :condition_texts, :client, :user, :ng_user, :probability)
+  @@rea = Struct.new('Reaction' , :category, :replies, :else)
+  @@rep = Struct.new('Reply' , :reaction_texts, :weight, :prefix, :suffix)
+  @@els = Struct.new('Else'  , :category , :replies)
   def initialize(condition_hash, reaction_array)
     h = condition_hash
-    @@con = Struct.new('Condition', :category, :condition_texts, :client, :user, :ng_user, :probability)
-    @@rea = Struct.new('Reaction' , :category, :replies)
-    @@rep = Struct.new('Reply' , :reaction_texts, :weight, :prefix, :suffix)
-    @@els = Struct.new('Else'  , :category , :replies)
     @condition = @@con.new(h[:category], h[:condition_texts], h[:client], h[:user], h[:ng_user], h[:probability])
     @reactions = Array.new
     Array(reaction_array).each do |a|
-      #リアクションの配列かく
       Array(a[:repries]).each do |r|
         @rep = @@rep.new(r[:reaction_texts], r[:weight], r[:prefix], r[:suffix])
       end
@@ -23,7 +22,8 @@ class BotSetting < Hash
         end
         @els = @@els.new(e[:category], @elsrep)
       end
-      @reactions.unshift(@@rea.new(h[:category], @rep, @els))
+      rea = @@rea.new(h[:category], @rep, @els)
+      @reactions.unshift(rea)
     end
   end
 

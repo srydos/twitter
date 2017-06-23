@@ -5,6 +5,7 @@ require 'sanitize'
 require 'pp'
 class TetesolTwitter
   #初期化
+  attr_accessor :user
   def initialize(key_file_path)
     @key_hash = YAML.load_file(key_file_path)
     config = {
@@ -14,6 +15,7 @@ class TetesolTwitter
       access_token_secret: @key_hash['access_token_secret']
     }
     @client = Twitter::REST::Client.new(config)
+    @user   = @client.user
   end
 
   #ツイートする機能
