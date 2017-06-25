@@ -24,7 +24,7 @@ class TetesolBot < Array
     self.each do |s|
       case s.condition.category
       when "reply"
-        if tweet.in_reply_to_user_id == @user.name or tweet.full_text.delete("@#{@user.screen_name}") then
+        if tweet.in_reply_to_user_id == @user.name or tweet.full_text.delete("@#{@user.screen_name}")
           reaction(tweet, s.reactions) if has_text_in_tweet(tweet, s.condition.condition_texts)
         end
       when "timeline"
@@ -33,7 +33,6 @@ class TetesolBot < Array
         if tweet.user == @my_twietter_id then
           reaction(tweet, s.reactions) if has_text_in_tweet(tweet, s.condition.condition_texts)
         end
-
       #以下はツイートからは判断しないため無視
       when "fav_me"
       when "fav"
@@ -63,13 +62,16 @@ class TetesolBot < Array
 
   #ツイートのテキストに条件テキストが含まれるかチェック
   def has_text_in_tweet(tweet, text_array)
-    puts "here"
     Array(text_array).each do |text|
-      tweet.full_text.include?(text)
+      if tweet.full_text.include?(text)
+        return true
+      end
     end
+    false
   end
   #リアクション処理の中身
   def reaction(tweet, reactions)
+    pp "here"
     Array(reactions).each do |rea|
       case rea.category
       when "reply"
@@ -92,6 +94,8 @@ class TetesolBot < Array
   #リプライをする場合
   def do_reply(tweet, reaction)
     text = reaction_random_text(reaction)
+    pp "replyyyyyyyyyyying"
+    pp text
     exit
     @client.reply(tweet.id, text)
   end
@@ -126,6 +130,7 @@ class TetesolBot < Array
 
   #ツイートする際のランダム生成化
   def reaction_random_text(rea)
+    pp rea
     text = Array(rea.replies).sample
     text
   end

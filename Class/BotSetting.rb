@@ -13,11 +13,11 @@ class BotSetting < Hash
     @condition = @@con.new(h[:category], h[:condition_texts], h[:client], h[:user], h[:ng_user], h[:probability])
     @reactions = Array.new
     Array(reaction_array).each do |a|
-      Array(a[:repries]).each do |r|
+      Array(a[:replies]).each do |r|
         @rep = @@rep.new(r[:reaction_texts], r[:weight], r[:prefix], r[:suffix])
       end
       Array(a[:else]).each do |e|
-        Array(e[:repries]).each do |er|
+        Array(e[:replies]).each do |er|
           @elsrep = @@rep.new(er[:reaction_texts], er[:weight], er[:prefix], er[:suffix])
         end
         @els = @@els.new(e[:category], @elsrep)
