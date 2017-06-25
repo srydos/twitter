@@ -7,3 +7,5 @@ Result/*
 Config/*
 !Config
 err.log
+Gemfile.lock
+.bundle*

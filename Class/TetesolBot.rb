@@ -139,6 +139,7 @@ class TetesolBot < Array
         end
       end
     end
+    pp random_text_arr
     text = Array(random_text_arr).sample
     text
   end

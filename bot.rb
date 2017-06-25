@@ -21,22 +21,8 @@ if func_name == "debug_mode"
   conver_bot = TetesolBot.new(WORK_DIR + "Config/user.yml", WORK_DIR + "Config/reaction-condition.yml")
   monitored_tl = rest_client.mentions_timeline_bot(last_reply_id)
   monitored_tl.reverse.each do |tweet|
+    #pp "retweet? #{tweet.retweeted_status}"
     conver_bot.reaction_tweet(tweet)
-  end
-end
-
-#mention取得
-monitored_tl = rest_client.mentions_timeline_bot(last_reply_id)
-monitored_tl.reverse.each do |tweet|
-  @text = tweet.full_text
-  if @text.match("うんこ") or @text.match("クソ") then
-    @str = ""
-    #内容重複よけ　それでも被ったら流さないでいい
-    rand(15).times{ @str += "…"}
-    #なぜ人は排便時に水を流すのか
-    rest_client.reply(tweet.id ,"ジャーッ" + @str).id unless func_name == "debug_mode"
-    last_reply_id = tweet.id
-    pp last_reply_id if func_name == "debug_mode"
   end
 end
 
