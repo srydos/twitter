@@ -37,7 +37,7 @@ class TetesolTwitter
       puts 'target_user was not found...'
       return
     end
-    msg = "@#{target_user.screen_name} " + text
+    msg = "@#{target_user.screen_name} #{text}"
 #    msg = text #replyに@いらなくなる日が来る
     tweet = @client.update(msg,{:in_reply_to_status_id => target_tweet_id})
     return tweet

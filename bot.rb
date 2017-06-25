@@ -19,7 +19,6 @@ last_reply_id = rest_client.read_or_make_text_file(WORK_DIR + "Config/.last_repl
 #botクラス読み込み
 if func_name == "debug_mode"
   conver_bot = TetesolBot.new(WORK_DIR + "Config/user.yml", WORK_DIR + "Config/reaction-condition.yml")
-  pp conver_bot
   monitored_tl = rest_client.mentions_timeline_bot(last_reply_id)
   monitored_tl.reverse.each do |tweet|
     conver_bot.reaction_tweet(tweet)

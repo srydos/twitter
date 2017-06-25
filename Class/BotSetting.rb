@@ -4,25 +4,60 @@
 ###
 class BotSetting < Hash
   attr_accessor :condition, :reactions
-  @@con = Struct.new('Condition', :category, :condition_texts, :client, :user, :ng_user, :probability)
-  @@rea = Struct.new('Reaction' , :category, :replies, :else)
-  @@rep = Struct.new('Reply' , :reaction_texts, :weight, :prefix, :suffix)
-  @@els = Struct.new('Else'  , :category , :replies)
+  CONDITION = Struct.new('Condition',
+                     :category,
+                     :condition_texts,
+                     :client,
+                     :user,
+                     :ng_user,
+                     :probability)
+
+  REACTION = Struct.new('Reaction',
+                     :category,
+                     :replies,
+                     :else)
+
+  REPLY = Struct.new('Reply',
+                     :reaction_texts,
+                     :weight,
+                     :prefix,
+                     :suffix)
+
+  ELSE = Struct.new('Else',
+                     :category,
+                     :replies)
+
   def initialize(condition_hash, reaction_array)
     h = condition_hash
-    @condition = @@con.new(h[:category], h[:condition_texts], h[:client], h[:user], h[:ng_user], h[:probability])
+    @condition = CONDITION.new(h[:category],
+                           h[:condition_texts],
+                           h[:client],
+                           h[:user],
+                           h[:ng_user],
+                           h[:probability])
     @reactions = Array.new
     Array(reaction_array).each do |a|
+      @rep = []
       Array(a[:replies]).each do |r|
-        @rep = @@rep.new(r[:reaction_texts], r[:weight], r[:prefix], r[:suffix])
+        rep = REPLY.new(r[:reaction_texts],
+                         r[:weight],
+                         r[:prefix],
+                         r[:suffix])
+        @rep.unshift(rep)
       end
       Array(a[:else]).each do |e|
         Array(e[:replies]).each do |er|
-          @elsrep = @@rep.new(er[:reaction_texts], er[:weight], er[:prefix], er[:suffix])
+          @elsrep = REPLY.new(er[:reaction_texts],
+                              er[:weight],
+                              er[:prefix],
+                              er[:suffix])
         end
-        @els = @@els.new(e[:category], @elsrep)
+        @els = ELSE.new(e[:category],
+                         @elsrep)
       end
-      rea = @@rea.new(h[:category], @rep, @els)
+      rea = REACTION.new(h[:category],
+                      @rep,
+                      @els)
       @reactions.unshift(rea)
     end
   end
