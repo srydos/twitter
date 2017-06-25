@@ -42,6 +42,7 @@ class TetesolBot < Array
       else
       end
     end
+    tweet.id
   end
 
   #イベントを受け取ってリアクションをする
@@ -63,12 +64,11 @@ class TetesolBot < Array
 
   #ツイートのテキストに条件テキストが含まれるかチェック
   def has_text_in_tweet(tweet, text_arr)
-    Array(text_arr).each do |text|
-      return true if tweet.full_text.include?(text)
-    end
-    false
+    Array(text_arr).any? { |text| tweet.full_text.include?(text) }
   end
-  #リアクション処理の中身
+
+  #リアクション処理
+  #@return tweet.id
   def reaction(tweet, reactions)
     Array(reactions).each do |rea|
       case rea.category
@@ -87,13 +87,15 @@ class TetesolBot < Array
       else
       end
     end
+    tweet.id
   end
 
   #リプライをする場合
   def do_reply(tweet, reaction)
     text = reaction_random_text(reaction)
     puts "reply text: #{text}"
-    return
+    pp tweet.id
+    return tweet.id
     #@client.reply(tweet.id, text)
   end
 
@@ -139,7 +141,6 @@ class TetesolBot < Array
         end
       end
     end
-    pp random_text_arr
     text = Array(random_text_arr).sample
     text
   end

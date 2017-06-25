@@ -15,16 +15,19 @@ puts "#{func_name}"
 
 #最後に反応したtweet_idを取得
 last_reply_id = rest_client.read_or_make_text_file(WORK_DIR + "Config/.last_reply_id")
+last = last_reply_id.to_i
 
 #botクラス読み込み
-if func_name == "debug_mode"
-  conver_bot = TetesolBot.new(WORK_DIR + "Config/user.yml", WORK_DIR + "Config/reaction-condition.yml")
-  monitored_tl = rest_client.mentions_timeline_bot(last_reply_id)
-  monitored_tl.reverse.each do |tweet|
-    #pp "retweet? #{tweet.retweeted_status}"
-    conver_bot.reaction_tweet(tweet)
-  end
+conver_bot = TetesolBot.new(WORK_DIR + "Config/user.yml", WORK_DIR + "Config/reaction-condition.yml")
+
+#replyから反応
+replied_id = 1
+monitored_tl = rest_client.mentions_timeline_bot(last_reply_id)
+monitored_tl.reverse.each do |tweet|
+  replied_id = conver_bot.reaction_tweet(tweet) if !tweet.retweet?
+  last = (replied_id < last)? last : replied_id
 end
 
 #最後のtweet_idを保存
+last_reply_id = last.to_s
 rest_client.write_text_to_file(WORK_DIR + "Config/.last_reply_id", last_reply_id)
