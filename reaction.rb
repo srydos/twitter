@@ -23,17 +23,20 @@ func_name = "favorite" if args.delete("-f") or args.delete("-favorite")
 target_tweet_id = args[0]
 puts "\"" + func_name + "\" doing..."
 begin
-  case func_name 
+  case func_name
   when "retweet"
     result = twitter_user.retweet(target_tweet_id)
   when "favorite"
     result = twitter_user.favorite(target_tweet_id)
-    if result.empty? then
+    if result.empty?
       result = twitter_user.unfavorite(target_tweet_id)
       puts "unfav."
+    else
+      puts "fav."
     end
   when "delete"
     result = twitter_user.delete(target_tweet_id)
+    puts "fav."
   else
     puts "hmm... what method?"
   end

@@ -95,6 +95,7 @@ class TetesolBot < Array
     text = reaction_random_text(reaction)
     puts "reply text: #{text}"
     tweeted = @client.reply(tweet.id, text)
+    @client.tweet_print_console(tweeted)
     tweeted.id
   end
 
@@ -102,6 +103,7 @@ class TetesolBot < Array
   def do_tweet(reaction)
     text = reaction_random_text(reaction)
     tweeted = @client.tweet(text)
+    @client.tweet_print_console(tweeted)
     tweeted.id
   end
 
