@@ -9,3 +9,4 @@ Config/*
 err.log
 Gemfile.lock
 .bundle*
+.*
