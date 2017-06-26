@@ -94,15 +94,15 @@ class TetesolBot < Array
   def do_reply(tweet, reaction)
     text = reaction_random_text(reaction)
     puts "reply text: #{text}"
-    pp tweet.id
-    return tweet.id
-    #@client.reply(tweet.id, text)
+    tweeted = @client.reply(tweet.id, text)
+    tweeted.id
   end
 
   #何かしらのツイートをする場合 空リプ？
   def do_tweet(reaction)
     text = reaction_random_text(reaction)
-    @client.tweet(text)
+    tweeted = @client.tweet(text)
+    tweeted.id
   end
 
   #削除を試みる（当然自分のツイート以外は削除できない）

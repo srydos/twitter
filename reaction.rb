@@ -33,7 +33,7 @@ begin
       puts "unfav."
     end
   when "delete"
-    result = twitter_user.destroy_status(target_tweet_id)
+    result = twitter_user.delete(target_tweet_id)
   else
     puts "hmm... what method?"
   end

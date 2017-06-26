@@ -19,16 +19,18 @@ class TetesolTwitter
   end
 
   #ツイートする機能
-  #text :ツイートの内容
+  #@param text :ツイートの内容
+  #@return tweetツイートした結果オブジェクト
   def tweet(text = '')
     msg = text
     tweet = @client.update(msg)
-    return tweet
+    tweet
   end
 
   #リプライ機能。リプライ対象のidを読み取って、@(userid) (text)の形でpostする
-  #target_tweet_id :リプライを送るツイートのid
-  #text            :ツイートの内容
+  #@param target_tweet_id :リプライを送るツイートのid
+  #@param text            :ツイートの内容
+  #@return tweetツイートした結果オブジェクト
   def reply (target_tweet_id = 0, text = '')
     #リプライ対象のユーザを取得
     begin
@@ -40,64 +42,63 @@ class TetesolTwitter
     msg = "@#{target_user.screen_name} #{text}"
 #    msg = text #replyに@いらなくなる日が来る
     tweet = @client.update(msg,{:in_reply_to_status_id => target_tweet_id})
-    return tweet
+    tweet
   end
 
   #ホームタイムラインを取得して生jsonのまま返す
   def home_timeline(last_tweet_id)
     json =  @client.home_timeline({:since_id => last_tweet_id})
-    return json
+    json
   end
 
   def local_trends(locale_code = 0)
     hash = @client.local_trends (locale_code)
-    return hash
+    hash
   end
 
   def search(query = '', count = 15)
     timeline = @client.search(query, {:count => count})
-    return timeline
+    timeline
   end
 
   def popular_search(query = '', count = 15)
     timeline = @client.search(query, {:count => count, :result_type => "popular"})
-    return timeline
+    timeline
   end
 
   #自分のTL
   def my_timeline
     timeline = @client.user_timeline( @client.user.id, {})
-    return timeline
+    timeline
   end
 
   #誰かのTL
   def user_timeline(user_id, options = {})
     timeline = @client.user_timeline(user_id)
-    return timeline
+    timeline
   end
 
   #mention
   def mentions_timeline
     timeline = @client.mentions_timeline
-    return timeline
+    timeline
   end
 
   #mention
   def mentions_timeline_bot(last_id)
-    p last_id
     timeline = @client.mentions_timeline({:since_id => last_id})
-    return timeline
+    timeline
   end
 
   #tweet_idに対してのreaction
   def retweet(id)
     tweet = @client.retweet(id)
-    return tweet
+    tweet
   end
 
   def favorite(id)
     tweet = @client.favorite(id)
-    return tweet
+    tweet
   end
 
   def favorite(id)
@@ -106,7 +107,7 @@ class TetesolTwitter
 
   def unfavorite(id)
     tweet = @client.unfavorite(id)
-    return tweet
+    tweet
   end
 
   def status(id) #発言の詳細をゲットする
@@ -126,9 +127,9 @@ p item
     tweets_print_console(tweet.user_mentions, 1)
   end
 
-  def destroy_status(id) #発言削除
+  def delete(id) #発言削除
     tweet = @client.destroy_status(id)
-    return tweet
+    tweet
   end
 
   #####
@@ -142,7 +143,7 @@ p item
     else
       time = nil
     end
-    return time
+    time
   end
 
   #timelineのtweet_id以降のタイムラインをコンソールに表示して、最後のtweet_idを返す
@@ -152,7 +153,7 @@ p item
       tweet_print_console(tweet)
       @tweet_id = tweet.id.to_s
     end
-    return @tweet_id
+    @tweet_id
   end
 
   def tweet_print_console(tweet)
@@ -162,7 +163,7 @@ p item
     else
       puts "	#{tweet.user.name} /@#{tweet.user.screen_name} /#{tweet_id_to_time(tweet.id).strftime("%Y-%m-%d %H:%M:%S.%L %Z")} : ( #{tweet.id.to_s} ) fv:#{tweet.favorite_count} rt:#{tweet.retweet_count} #{Sanitize.clean(tweet.source)}\n #{tweet.full_text}\n"
     end
-      return tweet.id
+    tweet.id.to_s
   end
 
   #YAMLに吐き出す機能？
@@ -189,7 +190,7 @@ p item
       File.open(file_path,"w")
       File.print(text)
     end
-    return text
+    text
   end
 
   #渡されたtextをファイルに書き込む

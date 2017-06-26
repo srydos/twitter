@@ -11,7 +11,7 @@ last_reply_id = "1"
 args = ARGV
 func_name = ""
 func_name = "debug_mode" if args.delete("-d") or args.delete("-debug")
-puts "#{func_name}"
+#puts "func#{func_name}"
 
 #最後に反応したtweet_idを取得
 last_reply_id = rest_client.read_or_make_text_file(WORK_DIR + "Config/.last_reply_id")
@@ -31,5 +31,5 @@ end
 
 #最後のtweet_idを保存
 last_reply_id = last.to_s
-puts "reactiond : #{last_reply_id}"
+puts "seen_id : #{last_reply_id}"
 rest_client.write_text_to_file(WORK_DIR + "Config/.last_reply_id", last_reply_id)
