@@ -15,6 +15,7 @@ puts "#{func_name}"
 
 #最後に反応したtweet_idを取得
 last_reply_id = rest_client.read_or_make_text_file(WORK_DIR + "Config/.last_reply_id")
+last_reply_id ="1" if last_reply_id.empty?
 last = last_reply_id.to_i
 
 #botクラス読み込み
@@ -30,4 +31,5 @@ end
 
 #最後のtweet_idを保存
 last_reply_id = last.to_s
+puts "reactiond : #{last_reply_id}"
 rest_client.write_text_to_file(WORK_DIR + "Config/.last_reply_id", last_reply_id)

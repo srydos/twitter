@@ -84,6 +84,7 @@ class TetesolTwitter
 
   #mention
   def mentions_timeline_bot(last_id)
+    p last_id
     timeline = @client.mentions_timeline({:since_id => last_id})
     return timeline
   end
