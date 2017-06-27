@@ -178,7 +178,8 @@ p item
   end
 
   #読み込んだファイルの最終行だけを返す
-  def read_or_make_text_file(file_path)
+  #なければ作成する
+  def read_textfile_or_new(file_path)
     text = ""
     if File.exist? (file_path)
       File.open(file_path,"r") do |file|
@@ -187,8 +188,9 @@ p item
         end
       end
     else
-      File.open(file_path,"w")
-      File.print(text)
+      File.open(file_path,"w") do |file|
+        file.puts(text)
+      end
     end
     text
   end

@@ -36,7 +36,7 @@ begin
     end
   when "delete"
     result = twitter_user.delete(target_tweet_id)
-    puts "fav."
+    puts "deleted."
   else
     puts "hmm... what method?"
   end

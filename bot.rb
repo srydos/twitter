@@ -14,7 +14,7 @@ func_name = "debug_mode" if args.delete("-d") or args.delete("-debug")
 #puts "func#{func_name}"
 
 #最後に反応したtweet_idを取得
-last_reply_id = rest_client.read_or_make_text_file(WORK_DIR + "Config/.last_reply_id")
+last_reply_id = rest_client.read_textfile_or_new(WORK_DIR + "Config/.last_reply_id")
 last_reply_id ="1" if last_reply_id.empty?
 last = last_reply_id.to_i
 
