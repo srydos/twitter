@@ -24,7 +24,6 @@ class TetesolTwitter
   def tweet(text = '')
     msg = text
     tweet = @client.update(msg)
-    tweet
   end
 
   #リプライ機能。リプライ対象のidを読み取って、@(userid) (text)の形でpostする
@@ -42,63 +41,52 @@ class TetesolTwitter
     msg = "@#{target_user.screen_name} #{text}"
 #    msg = text #replyに@いらなくなる日が来る
     tweet = @client.update(msg,{:in_reply_to_status_id => target_tweet_id})
-    tweet
   end
 
   #ホームタイムラインを取得して生jsonのまま返す
   def home_timeline(last_tweet_id)
     json =  @client.home_timeline({:since_id => last_tweet_id})
-    json
   end
 
   def local_trends(locale_code = 0)
     hash = @client.local_trends (locale_code)
-    hash
   end
 
   def search(query = '', count = 15)
     timeline = @client.search(query, {:count => count})
-    timeline
   end
 
   def popular_search(query = '', count = 15)
     timeline = @client.search(query, {:count => count, :result_type => "popular"})
-    timeline
   end
 
   #自分のTL
   def my_timeline
     timeline = @client.user_timeline( @client.user.id, {})
-    timeline
   end
 
   #誰かのTL
   def user_timeline(user_id, options = {})
     timeline = @client.user_timeline(user_id)
-    timeline
   end
 
   #mention
   def mentions_timeline
     timeline = @client.mentions_timeline
-    timeline
   end
 
   #mention
   def mentions_timeline_bot(last_id)
     timeline = @client.mentions_timeline({:since_id => last_id})
-    timeline
   end
 
   #tweet_idに対してのreaction
   def retweet(id)
     tweet = @client.retweet(id)
-    tweet
   end
 
   def favorite(id)
     tweet = @client.favorite(id)
-    tweet
   end
 
   def favorite(id)
@@ -107,7 +95,6 @@ class TetesolTwitter
 
   def unfavorite(id)
     tweet = @client.unfavorite(id)
-    tweet
   end
 
   def status(id) #発言の詳細をゲットする
@@ -129,7 +116,6 @@ p item
 
   def delete(id) #発言削除
     tweet = @client.destroy_status(id)
-    tweet
   end
 
   #####
@@ -143,7 +129,6 @@ p item
     else
       time = nil
     end
-    time
   end
 
   #timelineのtweet_id以降のタイムラインをコンソールに表示して、最後のtweet_idを返す
