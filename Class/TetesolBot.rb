@@ -21,21 +21,17 @@ class TetesolBot < Array
   end
 
   #ツイートをもらってリアクションをするか判断する
+  #条件記述メソッド
   def reaction_tweet(tweet)
+    @tweet = tweet
     self.each do |s|
       case s.condition.category
       when "reply"
-        if tweet.in_reply_to_user_id == @user.name or tweet.full_text.include?("@#{@user.screen_name}")
-          if has_text_in_tweet(tweet, s.condition.condition_texts)
-            reaction(tweet, s.reactions)
-          end
-        end
+        reaction(@tweet, s.reactions) if has_text_in_tweet(s)
       when "timeline"
-        reaction(tweet, s.reactions) if has_text_in_tweet(tweet, s.condition.condition_texts)
+        reaction(s.reactions) if has_text_in_tweet(s)
       when "self"
-        if tweet.user.id == @user.id
-          reaction(tweet, s.reactions) if has_text_in_tweet(tweet, s.condition.condition_texts)
-        end
+        reaction(s.reactions) if mine?(tweet)
       #以下はツイートからは判断しないため無視
       when "fav_me"
       when "fav"
@@ -44,7 +40,7 @@ class TetesolBot < Array
       else
       end
     end
-    tweet.id
+    @tweet.id
   end
 
   #イベントを受け取ってリアクションをする
@@ -64,42 +60,40 @@ class TetesolBot < Array
     end
   end
 
-  #ツイートのテキストに条件テキストが含まれるかチェック
-  def has_text_in_tweet(tweet, text_arr)
-    return true if text_arr.empty?
-    Array(text_arr).any? { |text| tweet.full_text.include?(text) }
-  end
 
-  #リアクション処理
+  #ツイートリアクション処理
   #@return tweet.id
-  def reaction(tweet, reactions)
+  def reaction_tw(reactions)
     Array(reactions).each do |rea|
       Array(rea.category).each do |cate|
         pp cate
         case cate
         when "reply"
-          do_reply(tweet, rea)
+          do_reply(@tweet, rea)
         when "tweet"
           do_tweet(rea)
         when "delete"
-          do_delete(tweet)
+          do_delete(@tweet)
         when "fav"
-          do_fav(tweet)
+          do_fav(@tweet)
         when "follow"
-          do_follow(tweet)
+          do_follow(@tweet)
         when "log"
-          save_log(tweet)
+          save_log(@tweet)
         else
         end
       end
     end
-    tweet.id
+    @tweet.id
   end
 
   #リプライをする場合
-  def do_reply(tweet, reaction)
+  def do_reply(reaction)
     text = reaction_random_text(reaction)
-    tweeted = @client.reply(tweet.id, text)
+    pp "dummy reply"
+    pp text
+    exit
+    tweeted = @client.reply(@tweet.id, text)
     @client.tweet_print_console(tweeted)
     tweeted.id
   end
@@ -113,28 +107,28 @@ class TetesolBot < Array
   end
 
   #削除を試みる（当然自分のツイート以外は削除できない）
-  def do_delete(tweet)
-    @client.delete(tweet)
-    tweet.id
+  def do_delete
+    @client.delete(@tweet)
+    @tweet.id
   end
 
   #該当ツイートをファボる
-  def do_fav(tweet)
-    @client.favorite(tweet)
-    tweet.id
+  def do_fav
+    @client.favorite(@tweet)
+    @tweet.id
   end
 
   #ツイートした人をフォローする
-  def do_follow(tweet)
-    @client.follow(tweet.user.id)
-    tweet.id
+  def do_follow
+    @client.follow(@tweet.user.id)
+    @tweet.id
   end
 
   #該当ツイートを保存する
-  def save_log(tweet)
+  def save_log
     File.open(EXPORT_TEXT_PATH, 'a+') do |file|
-      file.puts(tweet.to_hash)
-      file.puts(@client.tweet_print_console(tweet))
+      file.puts(@tweet.to_hash)
+      file.puts(@client.tweet_print_console(@tweet))
     end
   end
 
@@ -154,5 +148,31 @@ class TetesolBot < Array
     end
     text = Array(random_text_arr).sample
     text
+  end
+
+  ###
+  #条件式
+  ###
+
+  #リプライかどうか
+  def reply?
+    @tweet.in_reply_to_user_id
+  end
+
+  #自分宛のリプライかどうか
+  def reply_to_me?
+    @tweet.in_reply_to_user_id == @user.name || @tweet.full_text.include?("@#{@user.screen_name}")
+  end
+
+  #自分のツイートかどうか
+  def mine?
+    @tweet.user.id == @user.id
+  end
+
+  #ツイートのテキストに条件テキストが含まれるかチェック
+  def text_in_tweet(setting)
+    text_arr = setting.condition.condition_texts
+    return true if text_arr.empty? #条件なし == true
+    Array(text_arr).any? { |text| @tweet.full_text.include?(text) }
   end
 end
