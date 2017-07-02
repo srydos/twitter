@@ -72,8 +72,8 @@ end
 comment = ""
 DESCRIPTION.each_line { |line| comment << '# ' << line }
 cond_categories  = ["reply", "timeline", "self", "delete", "fav_me", "fav", "follow"]
-cond_categories_description  = ["リプライ", "ホームタイムラインのツイート", "自分のツイート", "ツイート削除イベント", "自分のツイートがファボられたイベント", "誰かがファボったイベント", "フォローされた"]
-react_categories = ["reply", "tweet", "delete", "fav", "follow", "log"]
+cond_categories_description  = ["リプライ", "ホームタイムラインのツイート", "自分のツイート", "ツイート削除イベント", "自分のツイートがファボられたイベント", "誰かがファボったイベント", "フォローされた"].freeze
+react_categories = ["reply", "tweet", "delete", "fav", "follow", "log"].freeze
 react_categories_description = ["リプライを返す", "何かツイートする", "対象を削除する(?)", "お気に入りに追加する", "そのユーザをフォローする", "保存出力しておく"]
 
 #現在の条件設定ファイル読み込み

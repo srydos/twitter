@@ -14,10 +14,14 @@ class TetesolStreaming
         access_token:        @key_hash['access_token'],
         access_token_secret: @key_hash['access_token_secret']
       }
-      @stream = Twitter::Streaming::Client.new(config)
+      @client = Twitter::Streaming::Client.new(config)
     else
       puts 'cannot read file_path...'
       exit
     end
+  end
+
+  def user(&block)
+    @client.user(&block)
   end
 end

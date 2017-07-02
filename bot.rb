@@ -23,9 +23,13 @@ conver_bot = TetesolBot.new(WORK_DIR + "Config/user.yml", WORK_DIR + "Config/rea
 
 #replyから反応
 replied_id = 1
+=begin
 monitored_tl = rest_client.mentions_timeline_bot(last_reply_id)
 monitored_tl.reverse.each do |tweet|
-  replied_id = conver_bot.reaction_tweet(tweet) if !tweet.retweet?
+=end
+stream_client.user do |event|
+  #replied_id = conver_bot.reaction(tweet) if !tweet.retweet?
+  touched_id = conver_bot.reaction(event)
   last = (replied_id < last)? last : replied_id
 end
 

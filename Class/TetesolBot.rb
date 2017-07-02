@@ -22,85 +22,100 @@ class TetesolBot < Array
 
   #ツイートをもらってリアクションをするか判断する
   #条件記述メソッド
-  def reaction_tweet(tweet)
-    @tweet = tweet
-    self.each do |s|
-      case s.condition.category
+  def reaction(material)
+    @eval_entity = material
+
+
+    pp material unless material.is_a?(Twitter::Streaming::FriendList)
+
+
+    self.each do |setting|
+      @eval_setting = setting
+      case @eval_setting.condition.category
       when "reply"
-        reaction(@tweet, s.reactions) if has_text_in_tweet(s)
+        if tweet? && reply? && reply_to_me? && text_in_tweet?
+          do_reaction
+        end
       when "timeline"
-        reaction(s.reactions) if has_text_in_tweet(s)
+        if tweet? && text_in_tweet?
+          do_reaction
+        end
       when "self"
-        reaction(s.reactions) if mine?(tweet)
+        if tweet? && mine? && text_in_tweet?
+          do_reaction
+        end
       #以下はツイートからは判断しないため無視
       when "fav_me"
+        if event? && fav? && fav_me?
+          do_reaction
+        end
       when "fav"
+        if event? && fav?
+          pp "fav!"
+
+
+          do_reaction
+        end
       when "delete"
+        if event? && delete?
+          pp material.user_id
+          pp material.id
+          pp material.attrs
+          tweet = Twitter::Tweet.new(material.attrs)
+          pp tweet
+          @client.tweet_print_console(tweet)
+
+
+          do_reaction
+        end
       when "follow"
+        if event?
+          do_reaction
+        end
       else
       end
     end
-    @tweet.id
   end
-
-  #イベントを受け取ってリアクションをする
-  def reaction_event(event)
-    self.each do |s|
-      case s.condition.category
-      when "fav_me"
-      when "fav"
-      when "delete"
-      when "follow"
-      #以下はツイートのため無視
-      when "reply"
-      when "timeline"
-      when "self"
-      else
-      end
-    end
-  end
-
 
   #ツイートリアクション処理
   #@return tweet.id
-  def reaction_tw(reactions)
-    Array(reactions).each do |rea|
-      Array(rea.category).each do |cate|
-        pp cate
-        case cate
+  def do_reaction
+    Array(@eval_setting.reactions).each do |reaction|
+      @eval_reaction = reaction
+      Array(@eval_reaction.category).each do |category|
+        case category
         when "reply"
-          do_reply(@tweet, rea)
+          do_reply
         when "tweet"
-          do_tweet(rea)
+          do_tweet
         when "delete"
-          do_delete(@tweet)
+          do_delete
         when "fav"
-          do_fav(@tweet)
+          do_fav
         when "follow"
-          do_follow(@tweet)
+          do_follow
         when "log"
-          save_log(@tweet)
+          save_log
         else
         end
       end
     end
-    @tweet.id
   end
 
   #リプライをする場合
-  def do_reply(reaction)
-    text = reaction_random_text(reaction)
+  def do_reply
+    text = reaction_random_text
     pp "dummy reply"
     pp text
     exit
-    tweeted = @client.reply(@tweet.id, text)
+    tweeted = @client.reply(@eval_entity.id, text)
     @client.tweet_print_console(tweeted)
     tweeted.id
   end
 
   #何かしらのツイートをする場合 空リプ？
-  def do_tweet(reaction)
-    text = reaction_random_text(reaction)
+  def do_tweet
+    text = reaction_random_text
     tweeted = @client.tweet(text)
     @client.tweet_print_console(tweeted)
     tweeted.id
@@ -108,34 +123,31 @@ class TetesolBot < Array
 
   #削除を試みる（当然自分のツイート以外は削除できない）
   def do_delete
-    @client.delete(@tweet)
-    @tweet.id
+    @client.delete(@eval_entity)
   end
 
   #該当ツイートをファボる
   def do_fav
-    @client.favorite(@tweet)
-    @tweet.id
+    @client.favorite(@eval_entity)
   end
 
   #ツイートした人をフォローする
   def do_follow
-    @client.follow(@tweet.user.id)
-    @tweet.id
+    @client.follow(@eval_entity.user.id)
   end
 
   #該当ツイートを保存する
   def save_log
     File.open(EXPORT_TEXT_PATH, 'a+') do |file|
-      file.puts(@tweet.to_hash)
-      file.puts(@client.tweet_print_console(@tweet))
+      file.puts(@eval_entity.to_hash)
+      file.puts(@client.tweet_print_console(@eval_entity))
     end
   end
 
   #ツイートする際のランダム生成化
-  def reaction_random_text(reaction)
+  def reaction_random_text
     random_text_arr = []
-    reaction.replies.each do |reply|
+    @eval_reaction.replies.each do |reply|
       repetition = reply.weight.nil?? 1 : reply.weight
       repetition .times do
         reply.reaction_texts.each do |reaction_text|
@@ -146,33 +158,62 @@ class TetesolBot < Array
         end
       end
     end
-    text = Array(random_text_arr).sample
-    text
+    Array(random_text_arr).sample
   end
 
   ###
   #条件式
   ###
 
+  #ツイートかどうか
+  def tweet?
+    @eval_entity.is_a?(Twitter::Tweet)
+  end
+
+  #イベントかどうか
+  def event?
+    @eval_entity.is_a?(Twitter::Streaming::Event)
+  end
+
   #リプライかどうか
   def reply?
-    @tweet.in_reply_to_user_id
+    @eval_entity.in_reply_to_user_id
+  end
+
+  #リプライかどうか
+  def retweet?
+    @eval_entity.retweet?
   end
 
   #自分宛のリプライかどうか
   def reply_to_me?
-    @tweet.in_reply_to_user_id == @user.name || @tweet.full_text.include?("@#{@user.screen_name}")
+    @eval_entity.in_reply_to_user_id == @user.name || @eval_entity.full_text.include?("@#{@user.screen_name}")
   end
 
   #自分のツイートかどうか
   def mine?
-    @tweet.user.id == @user.id
+    @eval_entity.user.id == @user.id
+  end
+
+  #イベントかどうか
+  def fav?
+    @eval_entity.name == :favorite
+  end
+
+  #自分のツイートのお気に入りかどうか
+  def fav_me?
+    @eval_entity.user == @user.id
+  end
+
+  #ツイートの削除イベントかどうか
+  def delete?
+    @eval_entity.is_a?(Twitter::Streaming::DeletedTweet)
   end
 
   #ツイートのテキストに条件テキストが含まれるかチェック
-  def text_in_tweet(setting)
-    text_arr = setting.condition.condition_texts
+  def text_in_tweet?
+    text_arr = @eval_setting.condition.condition_texts
     return true if text_arr.empty? #条件なし == true
-    Array(text_arr).any? { |text| @tweet.full_text.include?(text) }
+    Array(text_arr).any? { |text| @eval_entity.full_text.include?(text) }
   end
 end
