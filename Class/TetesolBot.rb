@@ -25,9 +25,7 @@ class TetesolBot < Array
   def reaction(material)
     @eval_entity = material
 
-
     pp material unless material.is_a?(Twitter::Streaming::FriendList)
-
 
     self.each do |setting|
       @eval_setting = setting
@@ -51,20 +49,24 @@ class TetesolBot < Array
         end
       when "fav"
         if event? && fav?
-          pp "fav!"
 
+          pp "fav!"
 
           do_reaction
         end
       when "delete"
-        if event? && delete?
-          pp material.user_id
-          pp material.id
-          pp material.attrs
+
+        p event?
+        p delete?
+        if delete?
+          pp @eval_entity.user_id
+          pp @eval_entity.id
+          pp @eval_entity.attrs
+          user  = Twitter::User.new(material.attrs)
           tweet = Twitter::Tweet.new(material.attrs)
           pp tweet
+          pp user
           @client.tweet_print_console(tweet)
-
 
           do_reaction
         end
