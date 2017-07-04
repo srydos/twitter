@@ -5,31 +5,6 @@ WORK_DIR=File.expand_path(__FILE__).sub(/[^\/]+$/,'')
 require WORK_DIR + './Class/BotSettings.rb'
 require WORK_DIR + './Class/BotSetting.rb'
 
-DESCRIPTION =<<__EoT__
- botが反応する条件を書く
- 必須でない項目は項目自体省略可能ですぞ
-
- - client:      使用するクライアント名 あらかじめConfig配下に設定ファイルを置く 必須
-   description: この設定時の説明用エリア
-   condition:
-     category: timeline mention delete等反応する条件配列 *必須*
-   - condition_texts: 反応するテキスト配列 空配列の場合は全てに反応する
-     client:   配列として指定された、反応しても良いクライアント
-     user:     配列として指定されたidのユーザーのみ反応する
-     ng_user:  配列として指定されたidのユーザには反応しない '@'不要
-     probability:   反応する確率 1で100% 0で反応しない 1がデフォ
-   reactions:
-     category: tweet reply follow fav等反応する動作の配列 *必須*
-     replies: replyの場合は必須 それ以外は省略可
-     - reaction_texts: 返答するテキスト 配列可 *必須*
-       weight: 重み付け整数 数字が大きいほど上記テキストを返す可能性が高い 1がデフォ
-       prefix: 接頭語 0..5でランダムについて重複投稿を回避
-       suffix: 接尾語 0..5でランダムについて重複投稿を回避
-   else:
-     category: 確率に漏れた場合の動作カテゴリ
-     replies: 上記に同じ
-__EoT__
-
 #対話型インデックス選択
 # @param 選択肢となる配列
 # @param 渡された配列の要素が連想形式だった場合は指定
@@ -70,8 +45,9 @@ end
 ###
 #コメント作成
 comment = ""
-DESCRIPTION.each_line { |line| comment << '# ' << line }
-cond_categories  = ["reply", "timeline", "self", "delete", "fav_me", "fav", "follow"]
+DATA.each_line { |line| comment << '# ' << line }
+#メニュー用配列
+cond_categories  = ["reply", "timeline", "self", "delete", "fav_me", "fav", "follow"].freeze
 cond_categories_description  = ["リプライ", "ホームタイムラインのツイート", "自分のツイート", "ツイート削除イベント", "自分のツイートがファボられたイベント", "誰かがファボったイベント", "フォローされた"].freeze
 react_categories = ["reply", "tweet", "delete", "fav", "follow", "log"].freeze
 react_categories_description = ["リプライを返す", "何かツイートする", "対象を削除する(?)", "お気に入りに追加する", "そのユーザをフォローする", "保存出力しておく"]
@@ -205,3 +181,26 @@ end
 #出力
  data = comment + setting.to_yaml
  pp data
+ __END__
+ botが反応する条件を書く
+ 必須でない項目は項目自体省略可能ですぞ
+
+ - client:      使用するクライアント名 あらかじめConfig配下に設定ファイルを置く 必須
+   description: この設定時の説明用エリア
+   condition:
+     category: timeline mention delete等反応する条件配列 *必須*
+   - condition_texts: 反応するテキスト配列 空配列の場合は全てに反応する
+     client:   配列として指定された、反応しても良いクライアント
+     user:     配列として指定されたidのユーザーのみ反応する
+     ng_user:  配列として指定されたidのユーザには反応しない '@'不要
+     probability:   反応する確率 1で100% 0で反応しない 1がデフォ
+   reactions:
+     category: tweet reply follow fav等反応する動作の配列 *必須*
+     replies: replyの場合は必須 それ以外は省略可
+     - reaction_texts: 返答するテキスト 配列可 *必須*
+       weight: 重み付け整数 数字が大きいほど上記テキストを返す可能性が高い 1がデフォ
+       prefix: 接頭語 0..5でランダムについて重複投稿を回避
+       suffix: 接尾語 0..5でランダムについて重複投稿を回避
+   else:
+     category: 確率に漏れた場合の動作カテゴリ
+     replies: 上記に同じ

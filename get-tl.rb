@@ -28,9 +28,9 @@ when 0..10
     timeline = twitter_user.my_timeline
     twitter_user.tweets_print_console(timeline, last_tweet_id)
   when "user"
-    len = user_arr.length 
+    len = user_arr.length
     user_arr.each do |user|
-      if not len = 0..1 then
+      unless len = 0..1
         puts 'press Enter...print TL user is ' + user
         STDIN.gets
       end

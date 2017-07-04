@@ -143,8 +143,17 @@ p item
 
   def tweet_print_console(tweet)
        #ツイートを表示して、そのIDを返す
-    if tweet.retweet? then
-      puts "	#{tweet.user.name} /@#{tweet.user.screen_name} /#{tweet_id_to_time(tweet.id).strftime("%Y-%m-%d %H:%M:%S.%L %Z")} : ( #{tweet.id.to_s} ) fv:#{tweet.favorite_count} rt:#{tweet.retweet_count} #{Sanitize.clean(tweet.source)}\n #{tweet.text}\n"
+    if tweet.retweet?
+      puts "	#{tweet.user.name} /@#{tweet.user.screen_name} /#{tweet_id_to_time(tweet.id).strftime("%Y-%m-%d %H:%M:%S.%L %Z")} : ( #{tweet.id.to_s} ) fv:#{tweet.favorite_count} rt:#{tweet.retweet_count} #{Sanitize.clean(tweet.source)}"
+      contexts = tweet.text.partition(":")
+      if contexts[0].slice!(0, 4) == "RT @" #user.screen_name
+        rt_user = contexts[0]
+        rt_text = contexts[2]
+        puts "@#{rt_user}"
+        puts rt_text
+      else
+        puts "rt??"
+      end
     else
       puts "	#{tweet.user.name} /@#{tweet.user.screen_name} /#{tweet_id_to_time(tweet.id).strftime("%Y-%m-%d %H:%M:%S.%L %Z")} : ( #{tweet.id.to_s} ) fv:#{tweet.favorite_count} rt:#{tweet.retweet_count} #{Sanitize.clean(tweet.source)}\n #{tweet.full_text}\n"
     end
