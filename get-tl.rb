@@ -30,7 +30,7 @@ when 0..10
   when "user"
     len = user_arr.length
     user_arr.each do |user|
-      unless len === 0..1
+      unless (0..1) === len
         puts 'press Enter...print TL user is ' + user
         STDIN.gets
       end
