@@ -59,13 +59,13 @@ class TetesolBot < Array
         p event?
         p delete?
         if delete?
-          pp @eval_entity.user_id
-          pp @eval_entity.id
-          pp @eval_entity.attrs
+          puts @eval_entity.user_id
+          puts @eval_entity.id
+          puts @eval_entity.attrs
           user  = Twitter::User.new(material.attrs)
           tweet = Twitter::Tweet.new(material.attrs)
-          pp tweet
-          pp user
+          puts tweet
+          puts user
           @client.tweet_print_console(tweet)
 
           do_reaction
@@ -79,6 +79,7 @@ class TetesolBot < Array
     end
   end
 
+  private
   #ツイートリアクション処理
   #@return tweet.id
   def do_reaction
