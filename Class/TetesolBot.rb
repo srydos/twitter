@@ -147,7 +147,8 @@ class TetesolBot < Array
     end
   end
 
-  #ツイートする際のランダム生成化
+  #ツイートする際のランダムリターン
+  #渡された配列の重みを計算して、テキストを返す
   def reaction_random_text
     random_text_arr = []
     @eval_reaction.replies.each do |reply|
@@ -170,53 +171,66 @@ class TetesolBot < Array
 
   #ツイートかどうか
   def tweet?
-    @eval_entity.is_a?(Twitter::Tweet)
+    !!@eval_entity.is_a?(Twitter::Tweet)
   end
 
   #イベントかどうか
   def event?
-    @eval_entity.is_a?(Twitter::Streaming::Event)
+    !!@eval_entity.is_a?(Twitter::Streaming::Event)
   end
 
   #リプライかどうか
   def reply?
-    @eval_entity.in_reply_to_user_id
+    !!@eval_entity.in_reply_to_user_id
   end
 
   #リプライかどうか
   def retweet?
-    @eval_entity.retweet?
+    !!@eval_entity.retweet?
   end
 
   #自分宛のリプライかどうか
   def reply_to_me?
-    @eval_entity.in_reply_to_user_id == @user.name || @eval_entity.full_text.include?("@#{@user.screen_name}")
+    !!@eval_entity.in_reply_to_user_id == @user.name || !!@eval_entity.full_text.include?("@#{@user.screen_name}")
   end
 
   #自分のツイートかどうか
   def mine?
-    @eval_entity.user.id == @user.id
+    !!@eval_entity.user.id == @user.id
   end
 
   #イベントかどうか
   def fav?
-    @eval_entity.name == :favorite
+    !!@eval_entity.name == :favorite
   end
 
   #自分のツイートのお気に入りかどうか
   def fav_me?
-    @eval_entity.user == @user.id
+    !!@eval_entity.user == @user.id
   end
 
   #ツイートの削除イベントかどうか
   def delete?
-    @eval_entity.is_a?(Twitter::Streaming::DeletedTweet)
+    !!@eval_entity.is_a?(Twitter::Streaming::DeletedTweet)
   end
 
   #ツイートのテキストに条件テキストが含まれるかチェック
   def text_in_tweet?
     text_arr = @eval_setting.condition.condition_texts
     return true if text_arr.empty? #条件なし == true
-    Array(text_arr).any? { |text| @eval_entity.full_text.include?(text) }
+    !!Array(text_arr).any? { |text| @eval_entity.full_text.include?(text) }
   end
+
+  #リアクションを行うかの確率判定
+  def hit?
+    puts "確率判定なし！" unless @eval_setting.probability
+    return true unless @eval_setting.probability
+    !!(rand*100).floor < @eval_setting.probability
+  end
+
+  #
+  def permit_user?
+    
+  end
+
 end

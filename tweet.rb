@@ -13,9 +13,7 @@ if msg == '' or args.length == 0
   print 'input massage! : '
   msg = STDIN.gets
 end
-if msg.match(/ $/)
-  msg[/ $/]= ''
-end
+msg.lstrip
 begin
   tweet = tweet_user.tweet(msg)
   tweet_user.tweet_print_console(tweet)
