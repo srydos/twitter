@@ -31,9 +31,9 @@ class BotSetting < Hash
     h = condition_hash
     @condition = CONDITION.new(h[:category],
                            h[:condition_texts],
-                           h[:client],
-                           h[:user],
-                           h[:ng_user],
+                           h[:clients],
+                           h[:users],
+                           h[:ng_users],
                            h[:probability])
     @reactions = []
     Array(reaction_array).each do |a|

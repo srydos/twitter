@@ -224,13 +224,26 @@ class TetesolBot < Array
   #リアクションを行うかの確率判定
   def hit?
     puts "確率判定なし！" unless @eval_setting.probability
-    return true unless @eval_setting.probability
-    !!(rand*100).floor < @eval_setting.probability
+    return true           unless @eval_setting.condition.probability
+    !!(rand*100).floor < @eval_setting.condition.probability
   end
 
-  #
-  def permit_user?
-    
+  #反応すべきユーザか判定
+  def watching_user?
+    return true if @eval_setting.condition.users.empty?
+    !!@eval_setting.condition.users.include?(@eval_entity.users)
   end
 
+  #無視するユーザか判定
+  #無視する場合はtrue
+  def ignore_user?
+    return false if @eval_setting.condition.ng_users.empty?
+    !!(!@eval_setting.condition.ng_users.include?(@eval_entity.ng_users))
+  end
+
+  #反応すべきクライアントかどうか判定
+  def watching_client?
+    return true if @eval_setting.condition.clients.empty?
+    !!@eval_setting.condition.clients.include?(@eval_entity.clients)
+  end
 end
