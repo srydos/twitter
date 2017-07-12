@@ -6,7 +6,7 @@ require WORK_DIR + './Class/TetesolBot.rb'
 begin
   rest_client   = TetesolTwitter.new(WORK_DIR + 'Config/unko.yml')
   stream_client = TetesolStreaming.new(WORK_DIR + 'Config/stream.yml')
-  last_reply_id = "1"
+  last_saw_id = "1"
 
   #使用機能判定
   args = ARGV
@@ -15,9 +15,9 @@ begin
   #puts "func#{func_name}"
 
   #最後に反応したtweet_idを取得
-  last_reply_id = rest_client.read_textfile_or_new(WORK_DIR + "Config/.last_reply_id")
-  last_reply_id ="1" if last_reply_id.empty?
-  last = last_reply_id.to_i
+  last_saw_id = rest_client.read_textfile_or_new(WORK_DIR + "Config/.last_saw_id")
+  last_saw_id ="1" if last_saw_id.empty?
+  last = last_saw_id.to_i
 
   #botクラス読み込み
   conver_bot = TetesolBot.new(WORK_DIR + "Config/user.yml", WORK_DIR + "Config/reaction-condition.yml")
@@ -25,19 +25,23 @@ begin
   #replyから反応
   replied_id = 1
 =begin
-  monitored_tl = rest_client.mentions_timeline_bot(last_reply_id)
+  monitored_tl = rest_client.mentions_timeline_bot(last_saw_id)
   monitored_tl.reverse.each do |tweet|
 =end
+pp stream_client
+exit
   stream_client.user do |event|
-    #replied_id = conver_bot.reaction(tweet) if !tweet.retweet?
-    touched_id = conver_bot.reaction(event)
-    last = (replied_id < last)? last : replied_id
+    pp event
+    pp event.class
   end
+    #replied_id = conver_bot.reaction(tweet) if !tweet.retweet?
+    saw_id = conver_bot.reaction(event)
+    last = (saw_id < last)? last : saw_id if saw_id.is_a?(Integer)
 
 rescue Interrupt => e
-  puts "bot off."
+  puts "\nbot off."
   #最後のtweet_idを保存
-  last_reply_id = last.to_s
-  puts "seen_id : #{last_reply_id}"
-  rest_client.write_text_to_file(WORK_DIR + "Config/.last_reply_id", last_reply_id)
+  last_saw_id = last.to_s
+  puts "saw_id : #{last_saw_id}"
+  rest_client.write_text_to_file(WORK_DIR + "Config/.last_saw_id", last_saw_id)
 end

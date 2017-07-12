@@ -21,7 +21,7 @@ class TetesolStreaming
     end
   end
 
-  def user(&block)
-    @client.user(&block)
+  def user
+    @client.user(yield)
   end
 end

@@ -28,7 +28,6 @@ class TetesolBot < Array
 
     return nil if material.is_a?(Twitter::Streaming::FriendList)
     pp material
-    pp conversation?
 
     self.lazy.each do |setting|
       @eval_setting = setting
