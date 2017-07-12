@@ -11,12 +11,13 @@ class TetesolBot < Array
   attr_accessor :client, :user
   #設定yamlから自身を規定し、起動
   def initialize(client_yml_path, setting_yaml_path)
+    @setting_yaml_path = setting_yaml_path
     @client = TetesolTwitter.new(client_yml_path)
     @user = @client.user
-    settings_array = YAML.load_file(setting_yaml_path)
+    settings_array = YAML.load_file(@setting_yaml_path)
     settings_array.each do |set|
       bot_setting = BotSetting.new(set[:condition], set[:reaction])
-      self.unshift(bot_setting)
+      self << bot_setting
     end
   end
 
@@ -25,9 +26,11 @@ class TetesolBot < Array
   def reaction(material)
     @eval_entity = material
 
-    pp material unless material.is_a?(Twitter::Streaming::FriendList)
+    return nil if material.is_a?(Twitter::Streaming::FriendList)
+    pp material
+    pp conversation?
 
-    self.each do |setting|
+    self.lazy.each do |setting|
       @eval_setting = setting
       case @eval_setting.condition.category
       when "reply"
@@ -42,7 +45,10 @@ class TetesolBot < Array
         if tweet? && mine? && text_in_tweet?
           do_reaction
         end
-      #以下はツイートからは判断しないため無視
+      when "conversation"
+        if tweet? && reply? && reply_to_me? && conbersation? && text_in_tweet?
+          do_reaction
+        end
       when "fav_me"
         if event? && fav? && fav_me?
           do_reaction
@@ -99,6 +105,8 @@ class TetesolBot < Array
           do_follow
         when "log"
           save_log
+        when "reload"
+          do_reload
         else
         end
       end
@@ -144,6 +152,16 @@ class TetesolBot < Array
     File.open(EXPORT_TEXT_PATH, 'a+') do |file|
       file.puts(@eval_entity.to_hash)
       file.puts(@client.tweet_print_console(@eval_entity))
+    end
+  end
+
+  #設定ファイルの再読込
+  def do_reload
+    self.map!{|v| v=nil}.compact!
+    settings_array = YAML.load_file(@setting_yaml_path)
+    settings_array.each do |set|
+      bot_setting = BotSetting.new(set[:condition], set[:reaction])
+      self << bot_setting
     end
   end
 
@@ -218,7 +236,7 @@ class TetesolBot < Array
   def text_in_tweet?
     text_arr = @eval_setting.condition.condition_texts
     return true if text_arr.empty? #条件なし == true
-    !!Array(text_arr).any? { |text| @eval_entity.full_text.include?(text) }
+    !!Array(text_arr).any? {|text| @eval_entity.full_text.include?(text)}
   end
 
   #リアクションを行うかの確率判定
@@ -231,6 +249,11 @@ class TetesolBot < Array
   #
   def permit_user?
     
+  end
+
+  #会話になっているかどうかの判定
+  def conversation?
+    !!Twitter::Tweet.new(@eval_entity.in_reply_to_tweet_id).user == @user.id
   end
 
 end
