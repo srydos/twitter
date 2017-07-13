@@ -37,23 +37,23 @@ class TetesolBot < Array
           do_reaction
         end
       when "timeline"
-        if tweet? && text_in_tweet?
+        if [tweet?, text_in_tweet?].all?
           do_reaction
         end
       when "self"
-        if tweet? && mine? && text_in_tweet?
+        if [tweet?, mine?, text_in_tweet?].all?
           do_reaction
         end
       when "conversation"
-        if tweet? && reply? && reply_to_me? && conbersation? && text_in_tweet?
+        if [tweet?, reply?, reply_to_me?, conbersation?, text_in_tweet?].all?
           do_reaction
         end
       when "fav_me"
-        if event? && fav? && fav_me?
+        if [event?, fav?, fav_me?].all?
           do_reaction
         end
       when "fav"
-        if event? && fav?
+        if [event?, fav?].all?
 
           pp "fav!"
 
@@ -76,7 +76,7 @@ class TetesolBot < Array
           do_reaction
         end
       when "follow"
-        if event?
+        if [event?, follow?].all
           do_reaction
         end
       else

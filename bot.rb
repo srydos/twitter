@@ -29,6 +29,7 @@ begin
   monitored_tl.reverse.each do |tweet|
 =end
 pp stream_client
+puts "why nilclass..."
 exit
   stream_client.user do |event|
     pp event
