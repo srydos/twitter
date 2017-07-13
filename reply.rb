@@ -23,7 +23,6 @@ when 1
   msg=STDIN.gets
 else
   target_tweet_id = args.shift.to_i
-  p args.shift
   #半角スペース対応
   Array(args).each {|text| msg += text + ' '}
   msg[/ $/]= '' if msg[/ $/]
