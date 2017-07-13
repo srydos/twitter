@@ -142,21 +142,39 @@ p item
   end
 
   def tweet_print_console(tweet)
-       #ツイートを表示して、そのIDを返す
+    #ツイートを表示し、そのIDを返す
+header = %W(
+#{tweet.user.name}
+/@#{tweet.user.screen_name}
+/
+#{tweet_id_to_time(tweet.id).strftime("%Y-%m-%d %H:%M:%S")}
+/
+(\s#{tweet.id.to_s}\s)
+#{"\sfv:#{tweet.favorite_count}" if 0 < tweet.favorite_count}
+#{"\srt:#{tweet.retweet_count}"  if 0 < tweet.retweet_count}
+\s#{Sanitize.clean(tweet.source)}
+\t
+https://twitter.com/#{tweet.user.screen_name}/status/#{tweet.id}
+).join
     if tweet.retweet?
-      puts "	#{tweet.user.name} /@#{tweet.user.screen_name} /#{tweet_id_to_time(tweet.id).strftime("%Y-%m-%d %H:%M:%S.%L %Z")} : ( #{tweet.id.to_s} ) fv:#{tweet.favorite_count} rt:#{tweet.retweet_count} #{Sanitize.clean(tweet.source)}"
+      print "********"
+      puts header
       contexts = tweet.text.partition(":")
       if contexts[0].slice!(0, 4) == "RT @" #user.screen_name
         rt_user = contexts[0]
         rt_text = contexts[2]
-        puts "@#{rt_user}"
+        puts "    #{tweet.attrs[:retweeted_status][:user][:name] rescue nil}/@#{rt_user}/#{tweet_id_to_time(tweet.attrs[:retweeted_status][:id]).strftime("%Y-%m-%d %H:%M:%S")}"
         puts rt_text
+        tweet.urls.each {|u| puts u.expanded_url} if tweet.urls?
       else
         puts "rt??"
       end
     else
-      puts "	#{tweet.user.name} /@#{tweet.user.screen_name} /#{tweet_id_to_time(tweet.id).strftime("%Y-%m-%d %H:%M:%S.%L %Z")} : ( #{tweet.id.to_s} ) fv:#{tweet.favorite_count} rt:#{tweet.retweet_count} #{Sanitize.clean(tweet.source)}\n #{tweet.full_text}\n"
+      print "\t"
+      puts header
+      puts "#{tweet.text}"
     end
+    puts nil #break line
     tweet.id.to_s
   end
 
