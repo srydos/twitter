@@ -25,10 +25,10 @@ pin = STDIN.gets
 access_token = request_token.get_access_token(:oauth_verifier => pin)
 
 key_hash = {
-  consumer_key:       consumer_key,
-  consumer_secret:    consumer_secret,
-  access_token:       access_token.token,
-  access_token_secret:access_token.secret
+  'consumer_key' => consumer_key,
+  'consumer_secret' => consumer_secret,
+  'access_token' => access_token.token,
+  'access_token_secret' => access_token.secret
 }
 
 # Configディレクトリ準備
