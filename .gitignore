@@ -12,3 +12,4 @@ Gemfile.lock
 .*
 /vendor/bundle
 !.ruby-version
+!.rubocop*.yml
