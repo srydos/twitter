@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 require 'oauth'
 require 'oauth/consumer'
 require 'fileutils'
