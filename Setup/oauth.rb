@@ -10,7 +10,7 @@ end
 
 consumer_key = ARGV[0]
 consumer_secret = ARGV[1]
-yaml_name = ARGV[2] || "user"
+yaml_name = ARGV[2] + ".yml" || "user.yml"
 
 consumer = OAuth::Consumer.new(consumer_key, consumer_secret, {site: "https://api.twitter.com"})
 request_token = consumer.get_request_token
@@ -32,11 +32,11 @@ key_hash = {
 }
 
 # Configディレクトリ準備
-config_path = File.expand_path(__FILE__).sub(/[^\/]+$/,'') + "../Config"
+config_path = File.expand_path("../Config", File.dirname(__FILE__))
 FileUtils.mkdir_p(config_path) unless File.exist?(config_path)
 
-open("#{config_path}/#{yaml_name}.yml","w+") do |yml|
+open("#{File.join(config_path ,yaml_name)}","w+") do |yml|
   YAML.dump(key_hash, yml)
 end
 
-puts "#{File.expand_path(config_path)}/#{yaml_name}.yml"
+puts "#{File.join(config_path ,yaml_name)} exported."
