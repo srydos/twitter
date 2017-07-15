@@ -159,7 +159,7 @@ https://twitter.com/#{tweet.user.screen_name}/status/#{tweet.id}
     if tweet.retweet?
       print "********"
       puts header
-      contexts = tweet.text.partition(": ")
+      contexts = tweet.full_text.partition(": ")
       if contexts[0].slice!(0, 4) == "RT @" #user.screen_name
         rt_user = contexts[0]
         rt_text = contexts[2]
