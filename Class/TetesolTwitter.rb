@@ -98,19 +98,19 @@ class TetesolTwitter
   end
 
   def status(id) #発言の詳細をゲットする
-    @target = @client.status(id)
-    tweet_print_console(@target)
-    @reactions = @target.user_mentions
-    if @reactions.empty? then
+    target = @client.status(id)
+    tweet_print_console(target)
+    reactions = target.user_mentions
+    if reactions.empty?
       puts "*** reply none ***"
       return
     end
-    @reactions.each do |item|
+    reactions.each do |item|
 pp item
 pp item.class
 p item
     end
-    tweets_print_console(@reactions, 1)
+    tweets_print_console(reactions, 1)
     tweets_print_console(tweet.user_mentions, 1)
   end
 
@@ -123,22 +123,16 @@ p item
   #####
   #ツイートIDから時刻を計算して返す
   def tweet_id_to_time(tweet_id)
-    case tweet_id
-    when Integer
-      time = Time.at(((tweet_id >> 22) + 1288834974657) / 1000.0)
-    else
-      time = nil
-    end
+    time = Time.at(((tweet_id >> 22) + 1288834974657) / 1000.0) if tweet_id.is_a?(Integer)
   end
 
   #timelineのtweet_id以降のタイムラインをコンソールに表示して、最後のtweet_idを返す
   def tweets_print_console(timeline, tweet_id)
-    @tweet_id = tweet_id
+    id = tweet_id
     timeline.reverse.each do |tweet|
-      tweet_print_console(tweet)
-      @tweet_id = tweet.id.to_s
+      id = tweet_print_console(tweet)
     end
-    @tweet_id
+    id.to_s
   end
 
   def tweet_print_console(tweet)
@@ -153,27 +147,25 @@ header = %W(
 #{"\sfv:#{tweet.favorite_count}" if 0 < tweet.favorite_count}
 #{"\srt:#{tweet.retweet_count}"  if 0 < tweet.retweet_count}
 \s#{Sanitize.clean(tweet.source)}
-\t
+\n
 https://twitter.com/#{tweet.user.screen_name}/status/#{tweet.id}
 ).join
     if tweet.retweet?
       print "********"
       puts header
       contexts = tweet.full_text.partition(": ")
-      if contexts[0].slice!(0, 4) == "RT @" #user.screen_name
-        rt_user = contexts[0]
-        rt_text = contexts[2]
-        puts "    #{tweet.attrs[:retweeted_status][:user][:name] rescue nil}/@#{rt_user}/#{tweet_id_to_time(tweet.attrs[:retweeted_status][:id]).strftime("%Y-%m-%d %H:%M:%S")}"
-        puts rt_text
-        tweet.urls.each {|u| puts u.expanded_url} if tweet.urls?
-      else
-        puts "rt??"
-      end
+      rt_user = contexts[0]
+      rt_text = contexts[2]
+      puts "    #{tweet.attrs[:retweeted_status][:user][:name] rescue nil}/@#{rt_user}/#{tweet_id_to_time(tweet.attrs[:retweeted_status][:id]).strftime("%Y-%m-%d %H:%M:%S")}"
+      puts rt_text
     else
       print "\t"
       puts header
       puts "#{tweet.text}"
     end
+    tweet.attrs[:entities][:urls].to_a.map {|u| puts "[#{u[:expanded_url]}]"} if tweet.urls?
+    tweet.attrs[:entities][:media].to_a.map{|m| puts "<#{m[:media_url]}>"} if tweet.media?
+    tweet.attrs
     puts nil #break line
     tweet.id.to_s
   end
