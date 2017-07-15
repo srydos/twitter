@@ -142,7 +142,7 @@ header = %W(
 /@#{tweet.user.screen_name}
 /
 #{tweet_id_to_time(tweet.id).strftime("%Y-%m-%d %H:%M:%S")}
-/
+\s
 (\s#{tweet.id.to_s}\s)
 #{"\sfv:#{tweet.favorite_count}" if 0 < tweet.favorite_count}
 #{"\srt:#{tweet.retweet_count}"  if 0 < tweet.retweet_count}
@@ -156,7 +156,7 @@ https://twitter.com/#{tweet.user.screen_name}/status/#{tweet.id}
       contexts = tweet.full_text.partition(": ")
       rt_user = contexts[0]
       rt_text = contexts[2]
-      puts "    #{tweet.attrs[:retweeted_status][:user][:name] rescue nil}/@#{rt_user}/#{tweet_id_to_time(tweet.attrs[:retweeted_status][:id]).strftime("%Y-%m-%d %H:%M:%S")}"
+      puts "  -->#{tweet.attrs[:retweeted_status][:user][:name] rescue nil}/@#{rt_user}/#{tweet_id_to_time(tweet.attrs[:retweeted_status][:id]).strftime("%Y-%m-%d %H:%M:%S")}( #{tweet.attrs[:retweeted_status][:id]} )"
       puts rt_text
     else
       print "\t"
