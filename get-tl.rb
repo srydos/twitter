@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 WORK_DIR=File.expand_path(__FILE__).sub(/[^\/]+$/,'')
-require WORK_DIR + './Class/TetesolTwitter.rb'
+require_relative 'Class/TetesolTwitter.rb'
 twitter_user = TetesolTwitter.new(WORK_DIR + 'Config/user.yml')
 
 args = ARGV
