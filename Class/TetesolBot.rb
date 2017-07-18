@@ -188,12 +188,12 @@ class TetesolBot < Array
 
   #ツイートかどうか
   def tweet?
-    !!@eval_entity.is_a?(Twitter::Tweet)
+    @eval_entity.is_a?(Twitter::Tweet)
   end
 
   #イベントかどうか
   def event?
-    !!@eval_entity.is_a?(Twitter::Streaming::Event)
+    @eval_entity.is_a?(Twitter::Streaming::Event)
   end
 
   #リプライかどうか
@@ -201,70 +201,70 @@ class TetesolBot < Array
     !!@eval_entity.in_reply_to_user_id
   end
 
-  #リプライかどうか
+  #リツイートかどうか
   def retweet?
-    !!@eval_entity.retweet?
+    @eval_entity.retweet?
   end
 
   #自分宛のリプライかどうか
   def reply_to_me?
-    !!@eval_entity.in_reply_to_user_id == @user.name || !!@eval_entity.full_text.include?("@#{@user.screen_name}")
+    @eval_entity.in_reply_to_user_id == @user.name || !!@eval_entity.full_text.include?("@#{@user.screen_name}")
   end
 
   #自分のツイートかどうか
   def mine?
-    !!@eval_entity.user.id == @user.id
+    @eval_entity.user.id == @user.id
   end
 
   #イベントかどうか
   def fav?
-    !!@eval_entity.name == :favorite
+    @eval_entity.name == :favorite
   end
 
   #自分のツイートのお気に入りかどうか
   def fav_me?
-    !!@eval_entity.user == @user.id
+    @eval_entity.user == @user.id
   end
 
   #ツイートの削除イベントかどうか
   def delete?
-    !!@eval_entity.is_a?(Twitter::Streaming::DeletedTweet)
+    @eval_entity.is_a?(Twitter::Streaming::DeletedTweet)
   end
 
   #ツイートのテキストに条件テキストが含まれるかチェック
   def text_in_tweet?
     text_arr = @eval_setting.condition.condition_texts
     return true if text_arr.empty? #条件なし == true
-    !!Array(text_arr).any? {|text| @eval_entity.full_text.include?(text)}
+    Array(text_arr).any? {|text| @eval_entity.full_text.include?(text)}
   end
 
   #リアクションを行うかの確率判定
   def hit?
     puts "確率判定なし！" unless @eval_setting.probability
     return true           unless @eval_setting.condition.probability
-    !!(rand*100).floor < @eval_setting.condition.probability
+    (rand*100).floor < @eval_setting.condition.probability
   end
 
   #反応すべきユーザか判定
   def watching_user?
     return true if @eval_setting.condition.users.empty?
-    !!@eval_setting.condition.users.include?(@eval_entity.users)
+    @eval_setting.condition.users.include?(@eval_entity.users)
   end
 
   #無視するユーザか判定
   #無視する場合はtrue
   def ignore_user?
     return false if @eval_setting.condition.ng_users.empty?
-    !!(!@eval_setting.condition.ng_users.include?(@eval_entity.ng_users))
+    (!@eval_setting.condition.ng_users.include?(@eval_entity.ng_users))
   end
 
   #反応すべきクライアントかどうか判定
   def watching_client?
     return true if @eval_setting.condition.clients.empty?
-    !!@eval_setting.condition.clients.include?(@eval_entity.clients)
+    @eval_setting.condition.clients.include?(@eval_entity.clients)
   end
   #会話になっているかどうかの判定
   def conversation?
-    !!Twitter::Tweet.new(@eval_entity.in_reply_to_tweet_id).user == @user.id
+    Twitter::Tweet.new(@eval_entity.in_reply_to_tweet_id).user == @user.id
   end
 end
