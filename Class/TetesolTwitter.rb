@@ -2,7 +2,6 @@
 require 'twitter'
 require 'yaml'
 require 'sanitize'
-require 'pp'
 class TetesolTwitter
   #初期化
   attr_accessor :user

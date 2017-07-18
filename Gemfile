@@ -5,4 +5,5 @@ gem 'twitter'
 
 group :development do
   gem 'rubocop'
+  gem 'tapp'
 end
