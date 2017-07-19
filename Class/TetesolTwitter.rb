@@ -153,8 +153,10 @@ https://twitter.com/#{tweet.user.screen_name}/status/#{tweet.id}
       print "********"
       puts header
       contexts = tweet.full_text.partition(": ")
-      rt_user = contexts[0]
-      rt_text = contexts[2]
+      if contexts[0].slice!(0, 4) == "RT @" #user.screen_name
+        rt_user = contexts[0]
+        rt_text = contexts[2]
+      end
       puts "  -->#{tweet.attrs[:retweeted_status][:user][:name] rescue nil}/@#{rt_user}/#{tweet_id_to_time(tweet.attrs[:retweeted_status][:id]).strftime("%Y-%m-%d %H:%M:%S")}( #{tweet.attrs[:retweeted_status][:id]} )"
       puts rt_text
     else
