@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 require 'twitter'
 require 'yaml'
-require 'sanitize'
 class TetesolTwitter
   #初期化
   attr_accessor :user
@@ -136,6 +135,7 @@ p item
 
   def tweet_print_console(tweet)
     #ツイートを表示し、そのIDを返す
+anker_tag_regex = %r(</?a.*?>)
 header = %W(
 #{tweet.user.name}
 /@#{tweet.user.screen_name}
@@ -145,7 +145,7 @@ header = %W(
 (\s#{tweet.id.to_s}\s)
 #{"\sfv:#{tweet.favorite_count}" if 0 < tweet.favorite_count}
 #{"\srt:#{tweet.retweet_count}"  if 0 < tweet.retweet_count}
-\s#{Sanitize.clean(tweet.source)}
+\s#{tweet.source.gsub(anker_tag_regex, "")}
 \n
 https://twitter.com/#{tweet.user.screen_name}/status/#{tweet.id}
 ).join

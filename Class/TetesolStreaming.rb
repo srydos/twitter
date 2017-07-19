@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 require 'twitter'
-require 'sanitize'
 require 'yaml'
 require 'pp'
 class TetesolStreaming
