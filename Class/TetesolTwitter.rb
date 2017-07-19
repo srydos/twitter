@@ -96,20 +96,14 @@ class TetesolTwitter
   end
 
   def status(id) #発言の詳細をゲットする
+    dig_reply_to id
+  end
+
+  def dig_reply_to(id) #再帰的にリプライチェーンをたどる
     target = @client.status(id)
+    return tweet_print_console(target) if target.in_reply_to_status_id.nil?
+    dig_reply_to target.in_reply_to_status_id
     tweet_print_console(target)
-    reactions = target.user_mentions
-    if reactions.empty?
-      puts "*** reply none ***"
-      return
-    end
-    reactions.each do |item|
-pp item
-pp item.class
-p item
-    end
-    tweets_print_console(reactions, 1)
-    tweets_print_console(tweet.user_mentions, 1)
   end
 
   def delete(id) #発言削除
@@ -154,8 +148,7 @@ https://twitter.com/#{tweet.user.screen_name}/status/#{tweet.id}
       puts header
       contexts = tweet.full_text.partition(": ")
       if contexts[0].slice!(0, 4) == "RT @" #user.screen_name
-        rt_user = contexts[0]
-        rt_text = contexts[2]
+        rt_user, _separator, rt_text = contexts
       end
       puts "  -->#{tweet.attrs[:retweeted_status][:user][:name] rescue nil}/@#{rt_user}/#{tweet_id_to_time(tweet.attrs[:retweeted_status][:id]).strftime("%Y-%m-%d %H:%M:%S")}( #{tweet.attrs[:retweeted_status][:id]} )"
       puts rt_text
