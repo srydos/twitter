@@ -1,1 +1,3 @@
-inherit_from: .rubocop_todo.yml
+# Use only ascii symbols in comments.
+ AsciiComments:
+   Enabled: false
