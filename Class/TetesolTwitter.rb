@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'twitter'
 require 'yaml'
+require 'uri'
 class TetesolTwitter
   #初期化
   attr_accessor :user
