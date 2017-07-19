@@ -157,8 +157,8 @@ https://twitter.com/#{tweet.user.screen_name}/status/#{tweet.id}
       puts header
       puts "#{tweet.text}"
     end
-    tweet.attrs[:entities][:urls].to_a.map {|u| puts "[#{u[:expanded_url]}]"} if tweet.urls?
-    tweet.attrs[:entities][:media].to_a.map{|m| puts "<#{m[:media_url]}>"} if tweet.media?
+    tweet.attrs[:extended_entities][:urls].to_a.map {|u| puts "[#{u[:expanded_url]}]"} if tweet.urls?
+    tweet.attrs[:extended_entities][:media].to_a.map{|m| puts "<#{m[:media_url]}>"} if tweet.media?
     tweet.attrs
     puts nil #break line
     tweet.id.to_s
