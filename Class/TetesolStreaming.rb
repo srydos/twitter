@@ -8,10 +8,10 @@ class TetesolStreaming
     if not key_file_path.empty? then
       @key_hash = YAML.load_file( key_file_path )
       config = {
-        consumer_key:        @key_hash['consumer_key'],
-        consumer_secret:     @key_hash['consumer_secret'],
-        access_token:        @key_hash['access_token'],
-        access_token_secret: @key_hash['access_token_secret']
+        consumer_key:        @key_hash[:consumer_key],
+        consumer_secret:     @key_hash[:consumer_secret],
+        access_token:        @key_hash[:access_token],
+        access_token_secret: @key_hash[:access_token_secret]
       }
       @client = Twitter::Streaming::Client.new(config)
     else
