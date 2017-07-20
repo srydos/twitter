@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-WORK_DIR = File.expand_path(__FILE__).sub(%r{[^\/]+$}, '')
+WORK_DIR = File.expand_path('./', File.dirname(__FILE__))
 require WORK_DIR + 'Class/TetesolTwitter.rb'
 twitter_user = TetesolTwitter.new(WORK_DIR + 'Config/user.yml')
 
