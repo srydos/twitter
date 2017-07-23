@@ -7,24 +7,24 @@ require 'fileutils'
 require 'yaml'
 
 if ARGV.length < 2
-  puts "require args (consumer_key) (consumer_secret_key)\'"
+  puts 'Required args (consumer_key) (consumer_secret_key)'
   exit
 end
 
 consumer_key = ARGV[0]
 consumer_secret = ARGV[1]
-yaml_name = ARGV[2] + '.yml' || 'user.yml'
+yaml_name = ARGV[2] ? ARGV[2] + '.yml' : 'user.yml'
 
 consumer = OAuth::Consumer.new(consumer_key,
                                consumer_secret,
                                site: 'https://api.twitter.com')
 request_token = consumer.get_request_token
 
-puts 'get pin in this url'
+puts '↓Get pin in this url↓'
 puts  request_token.authorize_url
 # urlにアクセスしてから
 sleep 5
-print 'input PIN : '
+print 'Input PIN : '
 pin = STDIN.gets
 
 access_token = request_token.get_access_token(oauth_verifier: pin)
@@ -44,4 +44,4 @@ open(File.join(config_path, yaml_name), 'w+') do |yml|
   YAML.dump(key_hash, yml)
 end
 
-puts "#{File.join(config_path, yaml_name)} exported."
+puts "#{File.join(config_path, yaml_name)} export completed."
