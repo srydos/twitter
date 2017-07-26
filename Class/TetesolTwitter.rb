@@ -133,11 +133,9 @@ class TetesolTwitter
 anker_tag_regex = %r(</?a.*?>)
 header = %W(
 #{tweet.user.name}
-/@#{tweet.user.screen_name}
-/
-#{tweet_id_to_time(tweet.id).strftime("%Y-%m-%d %H:%M:%S")}
-\s
-(\s#{tweet.id.to_s}\s)
+\s/@#{tweet.user.screen_name}
+\s/#{tweet_id_to_time(tweet.id).strftime("%Y-%m-%d %H:%M:%S")}
+\s (\s#{tweet.id.to_s}\s)
 #{"\sfv:#{tweet.favorite_count}" if 0 < tweet.favorite_count}
 #{"\srt:#{tweet.retweet_count}"  if 0 < tweet.retweet_count}
 \s#{tweet.source.gsub(anker_tag_regex, "")}
