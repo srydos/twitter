@@ -149,7 +149,7 @@ https://twitter.com/#{tweet.user.screen_name}/status/#{tweet.id}
       if contexts[0].slice!(0, 4) == "RT @" #user.screen_name
         rt_user, _separator, rt_text = contexts
       end
-      puts "  -->#{tweet.attrs[:retweeted_status][:user][:name] rescue nil}/@#{rt_user}/#{tweet_id_to_time(tweet.attrs[:retweeted_status][:id]).strftime("%Y-%m-%d %H:%M:%S")}( #{tweet.attrs[:retweeted_status][:id]} )"
+      puts "  -->#{tweet.attrs[:retweeted_status][:user][:name] rescue nil} / @#{rt_user} / #{tweet_id_to_time(tweet.attrs[:retweeted_status][:id]).strftime("%Y-%m-%d %H:%M:%S")}( #{tweet.attrs[:retweeted_status][:id]} )"
       puts rt_text
     else
       print "\t"
