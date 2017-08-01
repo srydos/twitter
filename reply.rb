@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
-WORK_DIR=File.expand_path(__FILE__).sub(/[^\/]+$/,'')
-require WORK_DIR + 'Class/TetesolTwitter.rb'
-tweet_user = TetesolTwitter.new(WORK_DIR + 'Config/user.yml')
+# frozen_string_literal: true
+
+WORK_DIR = File.expand_path('./', File.dirname(__FILE__))
+require_relative 'Class/tetesol_twitter'
+tweet_user = TetesolTwitter.new(WORK_DIR + '/Config/user.yml')
 msg = ''
 args = ARGV
 target_tweet_id = 1

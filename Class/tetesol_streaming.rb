@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby
 require 'twitter'
 require 'yaml'
 require 'pp'

@@ -2,9 +2,8 @@
 # frozen_string_literal: true
 
 WORK_DIR = File.expand_path('./', File.dirname(__FILE__))
-require WORK_DIR + 'Class/TetesolTwitter.rb'
-# 半角スペース対応
-tweet_user = TetesolTwitter.new(WORK_DIR + 'Config/user.yml')
+require_relative '/Class/tetesol_twitter'
+tweet_user = TetesolTwitter.new(WORK_DIR + '/Config/user.yml')
 
 msg = ''
 args = ARGV

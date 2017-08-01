@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
-WORK_DIR=File.expand_path(__FILE__).sub(/[^\/]+$/,'')
-require WORK_DIR + './Class/TetesolTwitter.rb'
-search_user = TetesolTwitter.new(WORK_DIR + './Config/user.yml')
+# frozen_string_literal: true
+
+WORK_DIR = File.expand_path('./', File.dirname(__FILE__))
+require_relative 'Class/tetesol_twitter'
+search_user = TetesolTwitter.new(WORK_DIR + '/Config/user.yml')
 
 if (search_user == nil ) then
   puts 'user.yml is not found...'
@@ -21,7 +23,7 @@ when 1
   rescue
     puts 'search request error...?'
   end
-  search_user.tweet_print_console( timeline )
+  search_user.tweet_to_yaml( timeline )
   exit
 else
   msg = ''

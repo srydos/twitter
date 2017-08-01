@@ -1,7 +1,8 @@
-#!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'yaml'
-require WORK_DIR + './Class/TetesolTwitter'
-require WORK_DIR + './Class/BotSetting.rb'
+require_relative 'tetesol_twitter'
+require_relative 'tetesol_streaming'
 ###
 # bot用の条件文を定義するクラス
 ###
