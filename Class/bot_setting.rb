@@ -1,21 +1,20 @@
-#!/usr/bin/env ruby
-###
+# frozen_string_literal: true
+
 # bot用の条件文を定義するクラス
-###
 class BotSetting < Hash
   attr_accessor :condition, :reactions
   CONDITION = Struct.new('Condition',
-                     :category,
-                     :condition_texts,
-                     :client,
-                     :user,
-                     :ng_user,
-                     :probability)
+                         :category,
+                         :condition_texts,
+                         :client,
+                         :user,
+                         :ng_user,
+                         :probability)
 
   REACTION = Struct.new('Reaction',
-                     :category,
-                     :replies,
-                     :else)
+                        :category,
+                        :replies,
+                        :else)
 
   REPLY = Struct.new('Reply',
                      :reaction_texts,
@@ -24,45 +23,40 @@ class BotSetting < Hash
                      :suffix)
 
   ELSE = Struct.new('Else',
-                     :category,
-                     :replies)
+                    :category,
+                    :replies)
 
   def initialize(condition_hash, reaction_array)
     h = condition_hash
     @condition = CONDITION.new(h[:category],
-                           h[:condition_texts],
-                           h[:clients],
-                           h[:users],
-                           h[:ng_users],
-                           h[:probability])
+                               h[:condition_texts],
+                               h[:clients],
+                               h[:users],
+                               h[:ng_users],
+                               h[:probability])
     @reactions = []
     Array(reaction_array).each do |a|
       @rep = []
       Array(a[:replies]).each do |r|
-        rep = REPLY.new(r[:reaction_texts],
-                        r[:weight],
-                        r[:prefix],
-                        r[:suffix])
+        rep = REPLY.new(r[:reaction_texts], r[:weight], r[:prefix], r[:suffix])
         @rep.unshift(rep)
       end
       Array(a[:else]).each do |e|
         Array(e[:replies]).each do |er|
-          @elsrep = REPLY.new(er[:reaction_texts],
-                              er[:weight],
-                              er[:prefix],
-                              er[:suffix])
+          @elsrep = REPLY.new(er[:reaction_texts], er[:weight],
+                              er[:prefix], er[:suffix])
         end
         @els = ELSE.new(e[:category],
-                         @elsrep)
+                        @elsrep)
       end
       rea = REACTION.new(a[:category],
-                      @rep,
-                      @els)
-      @reactions.unshift(rea)
+                         @rep,
+                         @els)
+      @reactions.push(rea)
     end
   end
 
-  #hashファイルからBotSetting生成
+  # hashファイルからBotSetting生成
   def make_from_hash(hash)
     @client      = hash[:client]
     @description = hash[:description]
@@ -70,9 +64,8 @@ class BotSetting < Hash
     @reaction    = hash[:reaction]
   end
 
-  #to_s
+  # to_s
   def to_s
-    return "#{@client}::#{@description}"
+    "#{@client}::#{@description}"
   end
 end
-
