@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
-WORK_DIR=File.expand_path(__FILE__).sub(/[^\/]+$/,'')
-require_relative 'Class/TetesolTwitter.rb'
-twitter_user = TetesolTwitter.new(WORK_DIR + 'Config/user.yml')
+# frozen_string_literal: true
+
+WORK_DIR = File.expand_path('./', File.dirname(__FILE__))
+require_relative 'Class/tetesol_twitter'
+twitter_user = TetesolTwitter.new(WORK_DIR + '/Config/user.yml')
 
 args = ARGV
 func_name = ""
@@ -40,8 +42,8 @@ when 0..10
   else
     #最後に取得したツイートid取得
     last_tweet_id = twitter_user.read_textfile_or_new(WORK_DIR + "/Config/.last_tweet_id")
-    last_tweet_id = "1" if last_tweet_id.empty?
-    timeline = twitter_user.home_timeline( last_tweet_id )
+    last_tweet_id = '1' if last_tweet_id.nil?
+    timeline = twitter_user.home_timeline(last_tweet_id)
     last_tweet_id = twitter_user.tweets_print_console(timeline, last_tweet_id) #見え方悪いけど合理的　直す？
     twitter_user.write_text_to_file(WORK_DIR + "/Config/.last_tweet_id", last_tweet_id)
   end

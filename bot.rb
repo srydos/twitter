@@ -1,11 +1,13 @@
 #!/usr/bin/env ruby
-WORK_DIR=File.expand_path(__FILE__).sub(/[^\/]+$/,'')
-require WORK_DIR + 'Class/TetesolTwitter.rb'
-require WORK_DIR + 'Class/TetesolStreaming.rb'
-require WORK_DIR + './Class/TetesolBot.rb'
+# frozen_string_literal: true
+
+WORK_DIR = File.expand_path('./', File.dirname(__FILE__))
+require_relative 'Class/tetesol_twitter'
+require_relative 'Class/tetesol_streaming'
+require_relative 'Class/tetesol_bot.rb'
 begin
-  rest_client   = TetesolTwitter.new(WORK_DIR + 'Config/unko.yml')
-  stream_client = TetesolStreaming.new(WORK_DIR + 'Config/stream.yml')
+  rest_client   = TetesolTwitter.new(WORK_DIR + '/Config/unko.yml')
+  stream_client = TetesolStreaming.new(WORK_DIR + '/Config/stream.yml')
   last_saw_id = "1"
 
   #使用機能判定

@@ -1,10 +1,13 @@
 #!/usr/bin/env ruby
-#
+# frozen_string_literal: true
+
+WORK_DIR = File.expand_path('./', File.dirname(__FILE__))
+require_relative 'Class/tetesol_twitter'
+
+###
 # tweetに対してfav rt del のいずれかの操作を行う
-#
-WORK_DIR=File.expand_path(__FILE__).sub(/[^\/]+$/,'')
-require WORK_DIR + 'Class/TetesolTwitter.rb'
-twitter_user = TetesolTwitter.new(WORK_DIR + 'Config/user.yml')
+###
+twitter_user = TetesolTwitter.new(WORK_DIR + '/Config/user.yml')
 
 args = ARGV
 if args.length > 2 then

@@ -1,9 +1,15 @@
 #!/usr/bin/env ruby
-require 'date' 
-WORK_DIR=File.expand_path(__FILE__).sub(/[^\/]+$/,'')
-require WORK_DIR + 'Class/TetesolTwitter.rb'
-twitter_user = TetesolTwitter.new('Config/trend-user.yml')
-#トレンドを表示 日本2345896 
+# frozen_string_literal: true
+
+WORK_DIR = File.expand_path('./', File.dirname(__FILE__))
+require 'date'
+require_relative 'Class/tetesol_twitter'
+twitter_user = TetesolTwitter.new(WORK_DIR + '/Config/trend-user.yml')
+
+###
+# トレンドを表示
+# 日本2345896
+###
 trends_local_plane = twitter_user.local_trends( 23424856 )
 trends_hash = {}
 trend_data  = []
@@ -15,4 +21,4 @@ trends_local_plane.to_hash[:trends].each do | hash |
   trend_data << hash
 end
 trends_hash["data"] = trend_data
-twitter_user.tweet_print_yaml( trends_hash, "./Result/data-trend.yml")
+twitter_user.tweet_to_yaml( trends_hash, "./Result/data-trend.yml")
