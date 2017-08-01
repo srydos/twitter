@@ -41,11 +41,8 @@ when 0..10
     end
   else
     # 最後に取得したツイートid取得
-    last_tweet_id = if last_tweet_id.nil?
-                      '1'
-                    else
-                      twitter_user.read_textfile_or_new('Config/.last_tweet_id')
-                    end
+    last_tweet_id = twitter_user.read_textfile_or_new('Config/.last_tweet_id')
+    last_tweet_id ||= '1'
     timeline = twitter_user.home_timeline(last_tweet_id)
     last_tweet_id = twitter_user.tweets_print_console(timeline, last_tweet_id)
     twitter_user.write_text_to_file('Config/.last_tweet_id', last_tweet_id)
