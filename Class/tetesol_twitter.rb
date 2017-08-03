@@ -173,12 +173,16 @@ class TetesolTwitter
   def make_print_retweet(tweet)
     rt_user, _separator, rt_text = tweet.full_text.slice(4..-1).partition(': ')
     rt_status = tweet.attrs[:retweeted_status]
+    favs = rt_status[:favorite_count]
+    rts = rt_status[:retweet_count]
     %W[
       \s
       \s-->#{rt_status[:user][:name]}
       /\s@#{rt_user}
       /\s#{tweet_id_to_time(rt_status[:id])}
       (\s#{rt_status[:id]}\s)
+      #{"\sfv:#{favs}" if favs.positive?}
+      #{"\srt:#{rts}" if rts.positive?}
       \n#{rt_text}
     ].join
   end
