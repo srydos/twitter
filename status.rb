@@ -2,8 +2,8 @@
 # frozen_string_literal: true
 
 WORK_DIR = File.expand_path('./', File.dirname(__FILE__))
-require_relative 'Class/tetesol_twitter'
-twitter_user = TetesolTwitter.new(WORK_DIR + '/Config/user.yml')
+require_relative 'class/tetesol_twitter'
+twitter_user = TetesolTwitter.new(WORK_DIR + '/config/user.yml')
 
 args = ARGV
 if args.length > 2

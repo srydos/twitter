@@ -3,8 +3,8 @@
 
 WORK_DIR = File.expand_path('./', File.dirname(__FILE__))
 require 'date'
-require_relative 'Class/tetesol_twitter'
-twitter_user = TetesolTwitter.new(WORK_DIR + '/Config/trend-user.yml')
+require_relative 'class/tetesol_twitter'
+twitter_user = TetesolTwitter.new(WORK_DIR + '/config/trend-user.yml')
 
 ###
 # トレンドを表示
@@ -21,4 +21,4 @@ trends_local_plane.to_hash[:trends].each do |hash|
   trend_data << hash
 end
 trends_hash['data'] = trend_data
-twitter_user.tweet_to_yaml(trends_hash, './Result/data-trend.yml')
+twitter_user.tweet_to_yaml(trends_hash, './result/data-trend.yml')

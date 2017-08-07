@@ -2,21 +2,21 @@
 # frozen_string_literal: true
 
 WORK_DIR = File.expand_path('./', File.dirname(__FILE__))
-require_relative 'Class/tetesol_twitter'
-require_relative 'Class/tetesol_streaming'
-require_relative 'Class/tetesol_bot.rb'
+require_relative 'class/tetesol_twitter'
+require_relative 'class/tetesol_streaming'
+require_relative 'class/tetesol_bot.rb'
 begin
-  rest_client   = TetesolTwitter.new(WORK_DIR + '/Config/unko.yml')
-  stream_client = TetesolStreaming.new(WORK_DIR + '/Config/stream.yml')
+  rest_client   = TetesolTwitter.new(WORK_DIR + '/config/unko.yml')
+  stream_client = TetesolStreaming.new(WORK_DIR + '/config/stream.yml')
 
   # 最後に反応したtweet_idを取得
-  last_saw_id = rest_client.read_textfile_or_new('Config/.last_saw_id')
+  last_saw_id = rest_client.read_textfile_or_new('config/.last_saw_id')
   last_saw_id ||= '1' if last_saw_id.empty?
   last = last_saw_id.to_i
 
   # botクラス読み込み
-  conver_bot = TetesolBot.new('Config/user.yml',
-                              'Config/reaction-condition.yml')
+  conver_bot = TetesolBot.new('config/user.yml',
+                              'config/reaction-condition.yml')
 
   # replyから反応
   # replied_id = 1
@@ -37,5 +37,5 @@ rescue Interrupt
   # 最後のtweet_idを保存
   last_saw_id = last.to_s
   puts 'saw_id : #{last_saw_id}'
-  rest_client.write_text_to_file(WORK_DIR + 'Config/.last_saw_id', last_saw_id)
+  rest_client.write_text_to_file(WORK_DIR + 'config/.last_saw_id', last_saw_id)
 end

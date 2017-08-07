@@ -2,8 +2,8 @@
 # frozen_string_literal: true
 
 WORK_DIR = File.expand_path('./', File.dirname(__FILE__))
-require_relative 'Class/tetesol_twitter'
-search_user = TetesolTwitter.new(WORK_DIR + '/Config/user.yml')
+require_relative 'class/tetesol_twitter'
+search_user = TetesolTwitter.new(WORK_DIR + '/config/user.yml')
 
 if search_user.nil?
   puts 'user.yml is not found...'
