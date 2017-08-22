@@ -3,7 +3,7 @@
 
 WORK_DIR = File.expand_path('./', File.dirname(__FILE__))
 require_relative 'class/tetesol_twitter'
-tweet_user = TetesolTwitter.new('config/user.yml')
+tweet_user = TetesolTwitter.new(WORK_DIR + '/config/user.yml')
 
 msg = ''
 args = ARGV
