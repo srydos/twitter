@@ -138,18 +138,19 @@ class TetesolTwitter
     end
     if tweet.urls?
       tweet.attrs[:entities][:urls].to_a.map do |u|
-        puts "[ #{URI.unescape(u[:expanded_url])} ]"
+        puts "[]  #{URI.unescape(u[:expanded_url])}"
       end
     end
     if tweet.media?
       tweet.attrs[:extended_entities][:media].to_a.map do |m|
-        puts "< #{m[:media_url]} >"
+        puts "<>  #{m[:media_url]}"
       end
     end
     puts nil # break line
     tweet.id.to_s
   end
 
+  # tweetのヘッダを生成
   def make_print_header(tweet)
     anker_tag_regex = %r{</?a.*?>}
     id = tweet.id
@@ -170,6 +171,7 @@ class TetesolTwitter
     ].join
   end
 
+  # retweetの場合のみbodyの生成
   def make_print_retweet(tweet)
     rt_user, _separator, rt_text = tweet.full_text.slice(4..-1).partition(': ')
     rt_status = tweet.attrs[:retweeted_status]
